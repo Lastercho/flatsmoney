@@ -1,0 +1,176 @@
+.apartment-list {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.apartment-list h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.apartment-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.apartment-form input {
+  padding: 8px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  flex: 1;
+  background-color: #ffffff;
+  color: #2c3e50;
+}
+
+.apartment-form input::placeholder {
+  color: #95a5a6;
+}
+
+.apartment-form button {
+  padding: 8px 16px;
+  background-color: #8e44ad;
+  color: #ecf0f1;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.apartment-form button:hover {
+  background-color: #7d3c98;
+  transform: translateY(-1px);
+}
+
+.apartments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.apartment-card {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.apartment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.apartment-card.selected {
+  border: 2px solid #8e44ad;
+}
+
+.apartment-card h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.apartment-card p {
+  color: #7f8c8d;
+  margin: 8px 0;
+}
+
+.apartment-card button {
+  padding: 8px 16px;
+  background-color: #e74c3c;
+  color: #ecf0f1;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s ease;
+}
+
+.apartment-card button:hover {
+  background-color: #c0392b;
+  transform: translateY(-1px);
+}
+
+.apartment-details {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.deposits-section,
+.obligations-section {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.deposit-form,
+.obligation-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.deposit-form input,
+.obligation-form input {
+  padding: 8px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  flex: 1;
+  background-color: #ffffff;
+  color: #2c3e50;
+}
+
+.deposit-form input::placeholder,
+.obligation-form input::placeholder {
+  color: #95a5a6;
+}
+
+.deposit-form button,
+.obligation-form button {
+  padding: 8px 16px;
+  background-color: #27ae60;
+  color: #ecf0f1;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deposit-form button:hover,
+.obligation-form button:hover {
+  background-color: #219a52;
+  transform: translateY(-1px);
+}
+
+.deposits-list,
+.obligations-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.deposit-item,
+.obligation-item {
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.deposit-item p,
+.obligation-item p {
+  margin: 5px 0;
+  color: #7f8c8d;
+} 
