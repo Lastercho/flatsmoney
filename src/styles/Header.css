@@ -1,7 +1,12 @@
-.main-header {
-  background-color: #2c3e50;
+.main-header,
+.header {
+  background-color: var(--dark-bg-secondary);
   padding: 1rem 2rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--dark-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .nav-menu {
@@ -13,21 +18,87 @@
 }
 
 .nav-link {
-  color: #ecf0f1;
+  color: var(--dark-text-primary);
   text-decoration: none;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.3s ease;
 }
 
 .nav-link:hover {
-  background-color: #34495e;
+  background-color: var(--dark-bg-tertiary);
   transform: translateY(-2px);
 }
 
 .nav-link.active {
-  background-color: #3498db;
+  background-color: var(--dark-primary);
   color: white;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--dark-text-primary);
+}
+
+.logout-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--dark-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: var(--dark-primary-hover);
+  transform: translateY(-2px);
+}
+
+/* Добавяме фиксирана височина на хедъра, за да можем да компенсираме в основното съдържание */
+.header {
+  height: 60px;
+}
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.header-title {
+  color: var(--dark-text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.logout-button {
+  background-color: transparent;
+  color: var(--dark-text-primary);
+  border: 1px solid var(--dark-border);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: var(--dark-error);
+  color: white;
+  border-color: var(--dark-error);
 }
 
 @media (max-width: 768px) {
@@ -39,4 +110,10 @@
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
   }
-} 
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+}

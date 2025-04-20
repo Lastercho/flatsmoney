@@ -5,7 +5,7 @@
 }
 
 .apartment-list h2 {
-  color: #2c3e50;
+  color: var(--dark-text-primary);
   margin-bottom: 20px;
   text-align: left;
 }
@@ -15,37 +15,38 @@
   gap: 10px;
   margin-bottom: 20px;
   padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background-color: var(--dark-bg-secondary);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--dark-border);
 }
 
 .apartment-form input {
-  padding: 8px;
-  border: 1px solid #bdc3c7;
-  border-radius: 4px;
+  padding: 10px;
+  border: 1px solid var(--dark-border);
+  border-radius: 6px;
   flex: 1;
-  background-color: #ffffff;
-  color: #2c3e50;
+  background-color: var(--dark-bg-tertiary);
+  color: var(--dark-text-primary);
 }
 
 .apartment-form input::placeholder {
-  color: #95a5a6;
+  color: var(--dark-text-secondary);
 }
 
 .apartment-form button {
-  padding: 8px 16px;
-  background-color: #8e44ad;
-  color: #ecf0f1;
+  padding: 10px 16px;
+  background-color: var(--dark-primary);
+  color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .apartment-form button:hover {
-  background-color: #7d3c98;
-  transform: translateY(-1px);
+  background-color: var(--dark-primary-hover);
+  transform: translateY(-2px);
 }
 
 .apartments-grid {
@@ -57,62 +58,67 @@
 
 .apartment-card {
   padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background-color: var(--dark-bg-secondary);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 1px solid var(--dark-border);
 }
 
 .apartment-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  border-color: var(--dark-primary);
 }
 
 .apartment-card.selected {
-  border: 2px solid #8e44ad;
+  border: 2px solid var(--dark-primary);
+  box-shadow: 0 0 0 2px rgba(136, 102, 255, 0.25);
 }
 
 .apartment-card h3 {
   margin-top: 0;
-  color: #2c3e50;
+  color: var(--dark-text-primary);
   font-weight: 500;
 }
 
 .apartment-card p {
-  color: #7f8c8d;
+  color: var(--dark-text-secondary);
   margin: 8px 0;
 }
 
 .apartment-card button {
   padding: 8px 16px;
-  background-color: #e74c3c;
-  color: #ecf0f1;
+  background-color: var(--dark-error);
+  color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   margin-top: 10px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .apartment-card button:hover {
-  background-color: #c0392b;
-  transform: translateY(-1px);
+  background-color: #d63031;
+  transform: translateY(-2px);
 }
 
 .apartment-details {
-  background-color: #ffffff;
+  background-color: var(--dark-bg-secondary);
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--dark-border);
 }
 
 .deposits-section,
 .obligations-section {
   margin-top: 20px;
   padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  background-color: var(--dark-bg-tertiary);
+  border-radius: 10px;
+  border: 1px solid var(--dark-border);
 }
 
 .deposit-form,
@@ -124,34 +130,34 @@
 
 .deposit-form input,
 .obligation-form input {
-  padding: 8px;
-  border: 1px solid #bdc3c7;
-  border-radius: 4px;
+  padding: 10px;
+  border: 1px solid var(--dark-border);
+  border-radius: 6px;
   flex: 1;
-  background-color: #ffffff;
-  color: #2c3e50;
+  background-color: var(--dark-bg-tertiary);
+  color: var(--dark-text-primary);
 }
 
 .deposit-form input::placeholder,
 .obligation-form input::placeholder {
-  color: #95a5a6;
+  color: var(--dark-text-secondary);
 }
 
 .deposit-form button,
 .obligation-form button {
-  padding: 8px 16px;
-  background-color: #27ae60;
-  color: #ecf0f1;
+  padding: 10px 16px;
+  background-color: var(--dark-success);
+  color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .deposit-form button:hover,
 .obligation-form button:hover {
-  background-color: #219a52;
-  transform: translateY(-1px);
+  background-color: #27ae60;
+  transform: translateY(-2px);
 }
 
 .deposits-list,
@@ -164,13 +170,14 @@
 .deposit-item,
 .obligation-item {
   padding: 15px;
-  background-color: #ffffff;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background-color: var(--dark-surface);
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--dark-border);
 }
 
 .deposit-item p,
 .obligation-item p {
   margin: 5px 0;
-  color: #7f8c8d;
-} 
+  color: var(--dark-text-primary);
+}

@@ -2,10 +2,12 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  background-color: var(--dark-bg-primary);
+  color: var(--dark-text-primary);
 }
 
 .home-page h1 {
-  color: #2c3e50;
+  color: var(--dark-text-primary);
   text-align: center;
   margin-bottom: 3rem;
 }
@@ -18,11 +20,12 @@
 }
 
 .feature-card {
-  background-color: #ffffff;
+  background-color: var(--dark-bg-secondary);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
+  color: var(--dark-text-primary);
 }
 
 .feature-card:hover {
@@ -30,12 +33,12 @@
 }
 
 .feature-card h3 {
-  color: #2c3e50;
+  color: var(--dark-text-primary);
   margin-bottom: 1rem;
 }
 
 .feature-card p {
-  color: #7f8c8d;
+  color: var(--dark-text-secondary);
   line-height: 1.6;
 }
 
@@ -48,4 +51,4 @@
     font-size: 1.8rem;
     margin-bottom: 2rem;
   }
-} 
+}

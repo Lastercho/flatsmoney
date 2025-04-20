@@ -1,34 +1,28 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/Header.css';
 
 const Header = () => {
-  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Изчистване на данните за сесията
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    // Пренасочване към страницата за вход
+    navigate('/login');
+  };
 
   return (
-    <header className="main-header">
-      <nav className="nav-menu">
-        <Link 
-          to="/" 
-          className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-        >
-          Начало
-        </Link>
-        <Link 
-          to="/buildings" 
-          className={`nav-link ${location.pathname === '/buildings' ? 'active' : ''}`}
-        >
-          Сгради
-        </Link>
-        <Link 
-          to="/reports" 
-          className={`nav-link ${location.pathname === '/reports' ? 'active' : ''}`}
-        >
-          Справки
-        </Link>
-      </nav>
+    <header className="header">
+      <div className="header-content">
+        <h1 className="header-title">Жилищна сграда</h1>
+        <button className="logout-button" onClick={handleLogout}>
+          Изход
+        </button>
+      </div>
     </header>
   );
 };
 
-export default Header; 
+export default Header;

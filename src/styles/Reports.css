@@ -2,10 +2,12 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  background-color: var(--dark-bg-primary);
+  color: var(--dark-text-primary);
 }
 
 .reports-page h2 {
-  color: #2c3e50;
+  color: var(--dark-text-primary);
   margin-bottom: 2rem;
 }
 
@@ -16,11 +18,12 @@
 }
 
 .report-card {
-  background-color: #ffffff;
+  background-color: var(--dark-bg-secondary);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
+  color: var(--dark-text-primary);
 }
 
 .report-card:hover {
@@ -28,12 +31,12 @@
 }
 
 .report-card h3 {
-  color: #2c3e50;
+  color: var(--dark-text-primary);
   margin-bottom: 1rem;
 }
 
 .report-card p {
-  color: #7f8c8d;
+  color: var(--dark-text-secondary);
   margin-bottom: 1.5rem;
   line-height: 1.6;
 }
@@ -46,40 +49,41 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  color: #2c3e50;
+  color: var(--dark-text-primary);
 }
 
 .building-selector select {
   padding: 0.8rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--dark-border);
   border-radius: 4px;
   font-size: 14px;
-  color: #2c3e50;
-  background-color: #fff;
+  color: var(--dark-text-primary);
+  background-color: var(--dark-bg-tertiary);
   cursor: pointer;
   transition: border-color 0.3s ease;
 }
 
 .building-selector select:hover {
-  border-color: #3498db;
+  border-color: var(--dark-primary);
 }
 
 .building-selector select:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  border-color: var(--dark-primary);
+  box-shadow: 0 0 0 2px rgba(136, 102, 255, 0.25);
 }
 
 .report-container {
   padding: 20px;
-  background-color: #fff;
+  background-color: var(--dark-bg-secondary);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   margin: 20px;
+  color: var(--dark-text-primary);
 }
 
 .report-container h2 {
-  color: #2c3e50;
+  color: var(--dark-text-primary);
   margin-bottom: 20px;
   text-align: center;
 }
@@ -87,7 +91,7 @@
 .filters-section {
   margin-bottom: 20px;
   padding: 15px;
-  background-color: #f8f9fa;
+  background-color: var(--dark-bg-primary);
   border-radius: 6px;
   display: flex;
   justify-content: space-between;
@@ -106,52 +110,50 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  color: #2c3e50;
+  color: var(--dark-text-primary);
 }
 
 .filter-group input,
 .filter-group select {
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--dark-border);
   border-radius: 4px;
   font-size: 14px;
-  color: #2c3e50;
-  background-color: #fff;
+  color: var(--dark-text-primary);
+  background-color: var(--dark-bg-tertiary);
 }
 
 .export-button {
-  background-color: #27ae60;
+  background-color: var(--dark-primary);
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
   transition: background-color 0.3s ease;
 }
 
 .export-button:hover {
-  background-color: #219a52;
+  background-color: var(--dark-primary-hover);
 }
 
 .report-summary {
-  background-color: #e9ecef;
+  background-color: #34495e; /* Тъмен фон */
   padding: 15px;
   border-radius: 6px;
   margin-bottom: 20px;
+  color: #ecf0f1; /* Светъл текст */
 }
 
 .report-summary h3 {
-  color: #2c3e50;
+  color: #ecf0f1; /* Светъл текст */
   margin-bottom: 10px;
 }
 
 .report-summary p {
   margin: 5px 0;
-  color: #495057;
+  color: #bdc3c7; /* Светлосив текст */
 }
 
 .report-content {
@@ -162,26 +164,27 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  color: #ecf0f1; /* Светъл текст */
 }
 
 th, td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #7f8c8d;
 }
 
 th {
-  background-color: #f8f9fa;
-  color: #2c3e50;
+  background-color: #34495e; /* Тъмен фон */
+  color: #ecf0f1; /* Светъл текст */
   font-weight: 600;
 }
 
 tr:hover {
-  background-color: #f8f9fa;
+  background-color: #2c3e50; /* По-тъмен фон при hover */
 }
 
 .error {
-  color: #dc3545;
+  color: #e74c3c; /* Червен текст за грешки */
   text-align: center;
   padding: 20px;
 }
@@ -222,4 +225,4 @@ tr:hover {
   .building-selector select {
     width: 100%;
   }
-} 
+}

@@ -1,13 +1,14 @@
 .building-details {
   padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background-color: var(--dark-bg-secondary);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   margin-top: 20px;
+  border: 1px solid var(--dark-border);
 }
 
 .building-details h2, .building-details h3 {
-  color: #2c3e50;
+  color: var(--dark-text-primary);
   margin-bottom: 20px;
   text-align: left;
 }
@@ -15,8 +16,9 @@
 .summary-section {
   margin-bottom: 30px;
   padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  background-color: var(--dark-bg-tertiary);
+  border-radius: 10px;
+  border: 1px solid var(--dark-border);
 }
 
 .summary-grid {
@@ -30,17 +32,18 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  background-color: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background-color: var(--dark-surface);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--dark-border);
 }
 
 .summary-item span {
-  color: #2c3e50;
+  color: var(--dark-text-primary);
 }
 
 .summary-item .amount {
-  color: #27ae60;
+  color: var(--dark-success);
   font-weight: bold;
 }
 
@@ -52,34 +55,36 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #ffffff;
+  background-color: var(--dark-surface);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th, td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #e9ecef;
-  color: #2c3e50;
+  border-bottom: 1px solid var(--dark-border);
+  color: var(--dark-text-primary);
 }
 
 th {
-  background-color: #f8f9fa;
+  background-color: var(--dark-bg-tertiary);
   font-weight: 600;
 }
 
 tr:hover {
-  background-color: #f8f9fa;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .payment-button {
   padding: 8px 12px;
-  background-color: #28a745;
+  background-color: var(--dark-success);
   color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   margin: 2px;
-  transition: background-color 0.2s;
+  transition: all 0.3s;
   font-size: 0.9em;
   display: block;
   width: 100%;
@@ -87,7 +92,8 @@ tr:hover {
 }
 
 .payment-button:hover {
-  background-color: #218838;
+  background-color: #27ae60;
+  transform: translateY(-2px);
 }
 
 .payment-button small {
@@ -127,7 +133,7 @@ tr:hover {
 }
 
 .building-header h2 {
-  color: #2c3e50;
+  color: var(--dark-text-primary);
   margin: 0;
   font-size: 24px;
 }
@@ -140,36 +146,40 @@ tr:hover {
 .btn {
   padding: 8px 16px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s;
 }
 
 .btn-edit {
-  background-color: #3498db;
+  background-color: var(--dark-primary);
   color: white;
 }
 
 .btn-edit:hover {
-  background-color: #2980b9;
+  background-color: var(--dark-primary-hover);
+  transform: translateY(-2px);
 }
 
 .btn-back {
-  background-color: #95a5a6;
-  color: white;
+  background-color: var(--dark-surface);
+  color: var(--dark-text-primary);
+  border: 1px solid var(--dark-border);
 }
 
 .btn-back:hover {
-  background-color: #7f8c8d;
+  background-color: var(--dark-bg-tertiary);
+  transform: translateY(-2px);
 }
 
 .building-info-card {
-  background: white;
-  border-radius: 8px;
+  background: var(--dark-bg-secondary);
+  border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--dark-border);
 }
 
 .info-group {
@@ -182,13 +192,13 @@ tr:hover {
 
 .info-group label {
   display: block;
-  color: #7f8c8d;
+  color: var(--dark-text-secondary);
   font-size: 14px;
   margin-bottom: 5px;
 }
 
 .info-group p {
-  color: #2c3e50;
+  color: var(--dark-text-primary);
   font-size: 16px;
   margin: 0;
 }
@@ -196,17 +206,18 @@ tr:hover {
 .loading {
   text-align: center;
   padding: 40px;
-  color: #3498db;
+  color: var(--dark-primary);
   font-size: 18px;
 }
 
 .error {
   text-align: center;
   padding: 20px;
-  color: #e74c3c;
-  background: rgba(231, 76, 60, 0.1);
+  color: var(--dark-error);
+  background: rgba(255, 107, 107, 0.1);
   border-radius: 8px;
   margin: 20px 0;
+  border: 1px solid var(--dark-error);
 }
 
 @media (max-width: 768px) {
