@@ -15,7 +15,7 @@ const PaymentHistoryReport = ({ buildingId }) => {
   });
 
   const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -42,7 +42,7 @@ const PaymentHistoryReport = ({ buildingId }) => {
         try {
           setLoading(true);
           // Първо зареждаме типовете разходи
-          const expenseTypesResponse = await axiosInstance.get('http://localhost:5000/api/expense-types');
+          const expenseTypesResponse = await axiosInstance.get(import.meta.env.VITE_API_BASE_URL,'/expense-types');
           console.log('Получени типове разходи:', expenseTypesResponse.data);
           setExpenseTypes(expenseTypesResponse.data);
           
@@ -71,11 +71,11 @@ const PaymentHistoryReport = ({ buildingId }) => {
   const fetchPaymentHistory = async (types) => {
     try {
       // Вземане на депозити
-      const floorsResponse = await axiosInstance.get(`http://localhost:5000/api/buildings/${buildingId}/floors`);
+      const floorsResponse = await axiosInstance.get(import.meta.env.VITE_API_BASE_URL,`/buildings/${buildingId}/floors`);
       const floors = floorsResponse.data;
       
       const apartmentsPromises = floors.map(floor =>
-          axiosInstance.get(`http://localhost:5000/api/floors/${floor.id}/apartments`)
+          axiosInstance.get(import.meta.env.VITE_API_BASE_URL,`/floors/${floor.id}/apartments`)
       );
       const apartmentsResponses = await Promise.all(apartmentsPromises);
       
@@ -83,7 +83,7 @@ const PaymentHistoryReport = ({ buildingId }) => {
       
       // Вземане на депозити за всеки апартамент
       const depositsPromises = allApartments.map(apartment =>
-          axiosInstance.get(`http://localhost:5000/api/apartments/${apartment.id}/deposits`)
+          axiosInstance.get(import.meta.env.VITE_API_BASE_URL,`/apartments/${apartment.id}/deposits`)
           .then(response => {
             return response.data.map(deposit => ({
               ...deposit,
@@ -97,7 +97,7 @@ const PaymentHistoryReport = ({ buildingId }) => {
       
       // Вземане на задължения
       const obligationsPromises = allApartments.map(apartment =>
-          axiosInstance.get(`http://localhost:5000/api/apartments/${apartment.id}/obligations`)
+          axiosInstance.get(import.meta.env.VITE_API_BASE_URL,`/apartments/${apartment.id}/obligations`)
           .then(response => {
             return response.data.map(obligation => ({
               ...obligation,
@@ -113,7 +113,7 @@ const PaymentHistoryReport = ({ buildingId }) => {
       );
 
       // Вземане на разходи
-      const expensesResponse = await axiosInstance.get(`http://localhost:5000/api/buildings/${buildingId}/expenses`);
+      const expensesResponse = await axiosInstance.get(import.meta.env.VITE_API_BASE_URL,`/buildings/${buildingId}/expenses`);
       console.log('Получени разходи:', expensesResponse.data);
       
       const expenses = expensesResponse.data.map(expense => {

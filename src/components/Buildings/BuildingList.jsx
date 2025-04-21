@@ -16,7 +16,7 @@ const BuildingList = ({ onBuildingSelect }) => {
     const fetchUserId = async () => {
       try {
         const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
-        const response = await axios.get('http://localhost:5000/api/auth/user', {
+        const response = await axios.get(import.meta.env.VITE_API_BASE_URL,'/api/auth/user', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -33,7 +33,7 @@ const BuildingList = ({ onBuildingSelect }) => {
 
   const fetchBuildings = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/buildings');
+      const response = await axios.get(import.meta.env.VITE_API_BASE_URL,'/buildings');
       setBuildings(response.data);
     } catch (error) {
       console.error('Грешка при зареждане на сградите:', error);
@@ -43,7 +43,7 @@ const BuildingList = ({ onBuildingSelect }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/buildings', {
+      await axios.post(import.meta.env.VITE_API_BASE_URL,'/buildings', {
         ...newBuilding,
         userId // Include user ID when creating a new building
       });
@@ -56,7 +56,7 @@ const BuildingList = ({ onBuildingSelect }) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/buildings/${id}`);
+      await axios.delete(import.meta.env.VITE_API_BASE_URL,`/buildings/${id}`);
       fetchBuildings();
     } catch (error) {
       console.error('Грешка при изтриване на сграда:', error);

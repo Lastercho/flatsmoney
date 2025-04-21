@@ -1,37 +1,26 @@
 import axios from 'axios';
 
-const token = localStorage.getItem('authToken'); // Assuming the token is stored in localStorage
-
 const instance = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
-    Authorization: `Bearer ${token}`
+    Authorization: `Bearer ${localStorage.getItem('authToken')}`
   }
 });
 
 instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
-    console.log('Token from localStorage:', token);
-
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('Request headers:', config.headers);
-    } else {
-      console.warn('No token found in localStorage');
     }
     return config;
   },
-  (error) => {
-    console.error('Request interceptor error:', error);
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('Axios error:', error.response?.data || error.message);
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
