@@ -5,6 +5,7 @@ import BuildingExpenses from './BuildingExpenses';
 import '../../styles/BuildingDetails.css';
 import ApartmentList from '../Apartments/ApartmentList';
 import FloorList from '../Floors/FloorList';
+import BulkObligations from "../Apartments/BulkObligations.jsx";
 
 const BuildingDetails = () => {
   const { id } = useParams();
@@ -12,6 +13,7 @@ const BuildingDetails = () => {
   const [apartments, setApartments] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showBulkObligations, setShowBulkObligations] = useState(false);
   const [summary, setSummary] = useState({
     totalDeposits: 0,
     totalObligations: 0,
@@ -19,6 +21,7 @@ const BuildingDetails = () => {
     availableAmount: 0
   });
   const [building, setBuilding] = useState(null);
+  const [floors, setFloors] = useState([]); // Добавяме state за етажите
   const [error, setError] = useState('');
   const [selectedFloor, setSelectedFloor] = useState(null);
 
@@ -145,17 +148,31 @@ const BuildingDetails = () => {
     }
   };
 
+
+  const handleRefreshData = () => {
+    fetchBuildingDetails();
+  };
+
+
   const fetchBuildingDetails = async () => {
     try {
-      const response = await axios.get(`/buildings/${id}`);
-      setBuilding(response.data);
-      fetchAllApartments();
-    } catch (err) {
-      console.error('Error fetching building details:', err);
-      setError('Грешка при зареждане на детайлите за сградата');
+      setLoading(true);
+      const buildingResponse = await axios.get(`/buildings/${id}`);
+      setBuilding(buildingResponse.data);
+
+      const floorsResponse = await axios.get(`/buildings/${id}/floors`);
+      setFloors(floorsResponse.data);
+
+      // След като се заредят основните данни, заредете и апартаментите с финансовите детайли
+      await fetchAllApartments();
+    } catch (error) {
+      console.error('Грешка при зареждане на детайли за сградата:', error);
+      setError('Възникна грешка при зареждане на детайли за сградата');
       setLoading(false);
     }
   };
+
+
 
   if (loading) return <div className="loading">Зареждане...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -172,6 +189,13 @@ const BuildingDetails = () => {
           >
             Редактирай
           </button>
+          <button
+              className="toggle-bulk-obligations"
+              onClick={() => setShowBulkObligations(!showBulkObligations)}
+          >
+            {showBulkObligations ? 'Скрий' : 'Добави задължение към всички апартаменти'}
+          </button>
+
           <button 
             className="btn btn-back"
             onClick={() => navigate('/buildings')}
@@ -179,6 +203,13 @@ const BuildingDetails = () => {
             Назад
           </button>
         </div>
+        {showBulkObligations && (
+            <BulkObligations
+                buildingId={id}
+                onSuccess={handleRefreshData}
+            />
+        )}
+
       </div>
 
       <div className="building-info-card">
