@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios'; // Използване на axios от utils
 import '../../styles/BuildingExpenses.css';
 
 const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
@@ -14,14 +14,6 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/api',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
-  });
-
   useEffect(() => {
     if (buildingId) {
       fetchExpenses();
@@ -31,16 +23,12 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
 
   const fetchExpenses = async () => {
     try {
-      const response = await axiosInstance.get(`/buildings/${buildingId}/expenses`);
+      const response = await axios.get(`/buildings/${buildingId}/expenses`);
       setExpenses(response.data);
       setError(null);
     } catch (err) {
-      if (err.response?.status === 401) {
-        setError('Неоторизиран достъп. Моля, влезте в системата.');
-      } else {
-        console.error('Грешка при зареждане на разходите:', err);
-        setError('Възникна грешка при зареждане на разходите');
-      }
+      console.error('Грешка при зареждане на разходите:', err);
+      setError('Възникна грешка при зареждане на разходите');
     } finally {
       setLoading(false);
     }
@@ -48,16 +36,12 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
 
   const fetchExpenseTypes = async () => {
     try {
-      const response = await axiosInstance.get('/expense-types');
+      const response = await axios.get('/expense-types');
       setExpenseTypes(response.data);
-      setError(null); // Clear any previous errors
+      setError(null);
     } catch (err) {
-      if (err.response?.status === 401) {
-        setError('Неоторизиран достъп. Моля, влезте в системата.');
-      } else {
-        console.error('Грешка при зареждане на типовете разходи:', err);
-        setError('Възникна грешка при зареждане на типовете разходи');
-      }
+      console.error('Грешка при зареждане на типовете разходи:', err);
+      setError('Възникна грешка при зареждане на типовете разходи');
     }
   };
 
@@ -65,7 +49,7 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
     e.preventDefault();
 
     try {
-      await axiosInstance.post(`/buildings/${buildingId}/expenses`, newExpense);
+      await axios.post(`/buildings/${buildingId}/expenses`, newExpense);
       setNewExpense({
         expense_type_id: '',
         amount: '',
@@ -78,12 +62,8 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
       }
       alert('Разходът е добавен успешно!');
     } catch (err) {
-      if (err.response?.status === 401) {
-        alert('Неоторизиран достъп. Моля, влезте в системата.');
-      } else {
-        console.error('Грешка при добавяне на разход:', err);
-        alert(err.response?.data?.error || 'Възникна грешка при добавяне на разхода');
-      }
+      console.error('Грешка при добавяне на разход:', err);
+      alert('Възникна грешка при добавяне на разхода');
     }
   };
 
@@ -93,19 +73,15 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
     }
 
     try {
-      await axiosInstance.delete(`/buildings/${buildingId}/expenses/${expenseId}`);
+      await axios.delete(`/buildings/${buildingId}/expenses/${expenseId}`);
       await fetchExpenses();
       if (onExpenseChange) {
         onExpenseChange();
       }
       alert('Разходът е изтрит успешно!');
     } catch (err) {
-      if (err.response?.status === 401) {
-        alert('Неоторизиран достъп. Моля, влезте в системата.');
-      } else {
-        console.error('Грешка при изтриване на разход:', err);
-        alert('Възникна грешка при изтриване на разхода');
-      }
+      console.error('Грешка при изтриване на разход:', err);
+      alert('Възникна грешка при изтриване на разхода');
     }
   };
 

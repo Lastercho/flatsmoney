@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const token = localStorage.getItem('authToken'); // Assuming the token is stored in localStorage
+const baseURL = window._env_?.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL,
   headers: {
-    Authorization: `Bearer ${token}`
+    Authorization: `Bearer ${localStorage.getItem('authToken')}`
   }
 });
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../utils/axios';
+import axios from '../../utils/axios'; // Използване на axios от utils
 import '../../styles/BuildingForm.css';
 
 const BuildingForm = () => {
@@ -22,15 +22,6 @@ const BuildingForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const token = localStorage.getItem('token');
-    console.log('Token before submit:', token); // Debug logging
-
-    if (!token) {
-      setError('Моля, влезте отново в системата');
-      navigate('/login');
-      return;
-    }
 
     try {
       const response = await axios.post('/buildings', formData);
@@ -120,4 +111,4 @@ const BuildingForm = () => {
   );
 };
 
-export default BuildingForm; 
+export default BuildingForm;

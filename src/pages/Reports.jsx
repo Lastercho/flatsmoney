@@ -1,30 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+
 import PaymentHistoryReport from '../components/Reports/PaymentHistoryReport';
 import '../styles/Reports.css';
 
-const Reports = ({ buildings }) => { // Rename prop to buildings
+const Reports = ({ buildings }) => {
   const [selectedBuilding, setSelectedBuilding] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/api',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
-  });
-
-  axiosInstance.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  }, error => {
-    return Promise.reject(error);
-  });
 
   useEffect(() => {
     setLoading(false); // Set loading to false since buildings are received as props

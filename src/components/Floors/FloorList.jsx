@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios'; // Използване на axios от utils
 import '../../styles/FloorList.css';
 
 const FloorList = ({ buildingId, onFloorSelect }) => {
@@ -11,24 +11,6 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
     total_apartments: ''
   });
 
-  const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/api',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
-  });
-
-  axiosInstance.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  }, error => {
-    return Promise.reject(error);
-  });
-
   useEffect(() => {
     if (buildingId) {
       fetchFloors();
@@ -38,7 +20,7 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
 
   const fetchBuilding = async () => {
     try {
-      const response = await axiosInstance.get(`/buildings/${buildingId}`);
+      const response = await axios.get(`/buildings/${buildingId}`);
       setBuilding(response.data);
     } catch (error) {
       console.error('Грешка при зареждане на информацията за сградата:', error);
@@ -47,7 +29,7 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
 
   const fetchFloors = async () => {
     try {
-      const response = await axiosInstance.get(`/buildings/${buildingId}/floors`);
+      const response = await axios.get(`/buildings/${buildingId}/floors`);
       setFloors(response.data);
     } catch (error) {
       console.error('Грешка при зареждане на етажите:', error);
@@ -69,7 +51,6 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
       return;
     }
 
-    // Проверка дали етажът вече съществува
     const floorExists = floors.some(floor => 
       floor.floor_number === parseInt(newFloor.floor_number) && !floor.is_deleted
     );
@@ -84,12 +65,12 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
         total_apartments: parseInt(newFloor.total_apartments)
       };
       
-      await axiosInstance.post(`/buildings/${buildingId}/floors`, floorData);
+      await axios.post(`/buildings/${buildingId}/floors`, floorData);
       setNewFloor({ floor_number: '', total_apartments: '' });
       fetchFloors();
     } catch (error) {
       console.error('Грешка при добавяне на етаж:', error);
-      if (error.response && error.response.data && error.response.data.error) {
+      if (error.response?.data?.error) {
         alert(error.response.data.error);
       } else {
         alert('Възникна грешка при добавяне на етаж!');
@@ -99,7 +80,7 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
 
   const handleDelete = async (floorId) => {
     try {
-      await axiosInstance.delete(`/floors/${floorId}`);
+      await axios.delete(`/floors/${floorId}`);
       fetchFloors();
     } catch (error) {
       console.error('Грешка при изтриване на етаж:', error);

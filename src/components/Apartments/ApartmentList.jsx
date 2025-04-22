@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios'; // Използване на axios от utils
 import '../../styles/ApartmentList.css';
 
 const ApartmentList = ({ floorId }) => {
@@ -24,24 +24,6 @@ const ApartmentList = ({ floorId }) => {
     description: ''
   });
 
-  const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/api',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
-  });
-
-  axiosInstance.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  }, error => {
-    return Promise.reject(error);
-  });
-
   useEffect(() => {
     if (floorId) {
       fetchApartments();
@@ -57,7 +39,7 @@ const ApartmentList = ({ floorId }) => {
 
   const fetchApartments = async () => {
     try {
-      const response = await axiosInstance.get(`/floors/${floorId}/apartments`);
+      const response = await axios.get(`/floors/${floorId}/apartments`);
       setApartments(response.data);
     } catch (error) {
       console.error('Грешка при зареждане на апартаментите:', error);
@@ -66,7 +48,7 @@ const ApartmentList = ({ floorId }) => {
 
   const fetchFloorInfo = async () => {
     try {
-      const response = await axiosInstance.get(`/floors/${floorId}`);
+      const response = await axios.get(`/floors/${floorId}`);
       setFloor(response.data);
     } catch (error) {
       console.error('Грешка при зареждане на информацията за етажа:', error);
@@ -76,8 +58,8 @@ const ApartmentList = ({ floorId }) => {
   const fetchDepositsAndObligations = async () => {
     try {
       const [depositsRes, obligationsRes] = await Promise.all([
-        axiosInstance.get(`/apartments/${selectedApartment.id}/deposits`),
-        axiosInstance.get(`/apartments/${selectedApartment.id}/obligations`)
+        axios.get(`/apartments/${selectedApartment.id}/deposits`),
+        axios.get(`/apartments/${selectedApartment.id}/obligations`)
       ]);
       setDeposits(depositsRes.data);
       setObligations(obligationsRes.data);
@@ -89,7 +71,6 @@ const ApartmentList = ({ floorId }) => {
   const handleSubmitApartment = async (e) => {
     e.preventDefault();
 
-    // Валидация на входните данни
     if (!newApartment.apartment_number.trim()) {
       alert('Моля, въведете номер на апартамента');
       return;
@@ -103,7 +84,6 @@ const ApartmentList = ({ floorId }) => {
       return;
     }
 
-    // Проверяваме дали вече има апартамент с този номер
     const existingApartment = apartments.find(
       apt => apt.apartment_number === newApartment.apartment_number
     );
@@ -113,7 +93,7 @@ const ApartmentList = ({ floorId }) => {
     }
 
     try {
-      const response = await axiosInstance.post(`/floors/${floorId}/apartments`, {
+      await axios.post(`/floors/${floorId}/apartments`, {
         ...newApartment,
         floor_id: floorId,
         apartment_number: newApartment.apartment_number.trim(),
@@ -141,7 +121,7 @@ const ApartmentList = ({ floorId }) => {
   const handleSubmitDeposit = async (e) => {
     e.preventDefault();
     try {
-      await axiosInstance.post(`/apartments/${selectedApartment.id}/deposits`, newDeposit);
+      await axios.post(`/apartments/${selectedApartment.id}/deposits`, newDeposit);
       setNewDeposit({ amount: '', date: '', description: '' });
       fetchDepositsAndObligations();
     } catch (error) {
@@ -152,7 +132,7 @@ const ApartmentList = ({ floorId }) => {
   const handleSubmitObligation = async (e) => {
     e.preventDefault();
     try {
-      await axiosInstance.post(`/apartments/${selectedApartment.id}/obligations`, newObligation);
+      await axios.post(`/apartments/${selectedApartment.id}/obligations`, newObligation);
       setNewObligation({ amount: '', due_date: '', description: '' });
       fetchDepositsAndObligations();
     } catch (error) {
@@ -162,7 +142,7 @@ const ApartmentList = ({ floorId }) => {
 
   const handleDeleteApartment = async (id) => {
     try {
-      const response = await axiosInstance.delete(`http://localhost:5000/api/apartments/${id}`);
+      const response = await axios.delete(`/apartments/${id}`);
       alert(response.data.message);
       fetchApartments();
       if (selectedApartment && selectedApartment.id === id) {
@@ -172,7 +152,7 @@ const ApartmentList = ({ floorId }) => {
       }
     } catch (error) {
       console.error('Грешка при изтриване на апартамент:', error);
-      if (error.response && error.response.data && error.response.data.error) {
+      if (error.response?.data?.error) {
         alert(error.response.data.error);
       } else {
         alert('Възникна грешка при изтриване на апартамента!');

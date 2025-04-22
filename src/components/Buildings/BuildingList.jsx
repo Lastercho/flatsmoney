@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios'; // Използване на axios от utils
 import '../../styles/BuildingList.css';
 
 const BuildingList = ({ onBuildingSelect }) => {
@@ -9,18 +9,12 @@ const BuildingList = ({ onBuildingSelect }) => {
     address: '',
     total_floors: ''
   });
-  const [userId, setUserId] = useState(null); // Add state for user ID
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    // Fetch user ID from authentication context or API
     const fetchUserId = async () => {
       try {
-        const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
-        const response = await axios.get('http://localhost:5000/api/auth/user', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        const response = await axios.get('/auth/user');
         setUserId(response.data.id);
       } catch (error) {
         console.error('Error fetching user ID:', error);
@@ -33,7 +27,7 @@ const BuildingList = ({ onBuildingSelect }) => {
 
   const fetchBuildings = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/buildings');
+      const response = await axios.get('/buildings');
       setBuildings(response.data);
     } catch (error) {
       console.error('Грешка при зареждане на сградите:', error);
@@ -43,9 +37,9 @@ const BuildingList = ({ onBuildingSelect }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/buildings', {
+      await axios.post('/buildings', {
         ...newBuilding,
-        userId // Include user ID when creating a new building
+        userId
       });
       setNewBuilding({ name: '', address: '', total_floors: '' });
       fetchBuildings();
@@ -56,7 +50,7 @@ const BuildingList = ({ onBuildingSelect }) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/buildings/${id}`);
+      await axios.delete(`/buildings/${id}`);
       fetchBuildings();
     } catch (error) {
       console.error('Грешка при изтриване на сграда:', error);
@@ -95,7 +89,7 @@ const BuildingList = ({ onBuildingSelect }) => {
 
       <div className="buildings-grid">
         {buildings
-          .filter(building => building.userId === userId) // Filter buildings by user ID
+          .filter(building => building.userId === userId)
           .map(building => (
             <div 
               key={building.id} 

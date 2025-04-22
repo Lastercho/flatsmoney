@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios'; // Използване на axios от utils
 import * as XLSX from 'xlsx';
 import '../../styles/Reports.css';
 
@@ -14,39 +14,13 @@ const PaymentHistoryReport = ({ buildingId }) => {
     type: 'all' // all, deposits, obligations, expenses
   });
 
-  const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/api',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
-  });
-
-  axiosInstance.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  }, error => {
-    return Promise.reject(error);
-  });
-
-
-
-
-
   useEffect(() => {
     if (buildingId) {
       const loadData = async () => {
         try {
           setLoading(true);
-          // Първо зареждаме типовете разходи
-          const expenseTypesResponse = await axiosInstance.get('http://localhost:5000/api/expense-types');
-          console.log('Получени типове разходи:', expenseTypesResponse.data);
+          const expenseTypesResponse = await axios.get('/expense-types');
           setExpenseTypes(expenseTypesResponse.data);
-          
-          // След това зареждаме историята на плащанията
           await fetchPaymentHistory(expenseTypesResponse.data);
         } catch (err) {
           console.error('Грешка при зареждане на данните:', err);
@@ -70,58 +44,47 @@ const PaymentHistoryReport = ({ buildingId }) => {
 
   const fetchPaymentHistory = async (types) => {
     try {
-      // Вземане на депозити
-      const floorsResponse = await axiosInstance.get(`http://localhost:5000/api/buildings/${buildingId}/floors`);
+      const floorsResponse = await axios.get(`/buildings/${buildingId}/floors`);
       const floors = floorsResponse.data;
-      
+
       const apartmentsPromises = floors.map(floor =>
-          axiosInstance.get(`http://localhost:5000/api/floors/${floor.id}/apartments`)
+        axios.get(`/floors/${floor.id}/apartments`)
       );
       const apartmentsResponses = await Promise.all(apartmentsPromises);
-      
+
       const allApartments = apartmentsResponses.flatMap(response => response.data);
-      
-      // Вземане на депозити за всеки апартамент
+
       const depositsPromises = allApartments.map(apartment =>
-          axiosInstance.get(`http://localhost:5000/api/apartments/${apartment.id}/deposits`)
-          .then(response => {
-            return response.data.map(deposit => ({
-              ...deposit,
-              apartment_number: apartment.apartment_number,
-              floor_number: apartment.floor_number,
-              owner_name: apartment.owner_name,
-              type: 'deposit'
-            }));
-          })
-      );
-      
-      // Вземане на задължения
-      const obligationsPromises = allApartments.map(apartment =>
-          axiosInstance.get(`http://localhost:5000/api/apartments/${apartment.id}/obligations`)
-          .then(response => {
-            return response.data.map(obligation => ({
-              ...obligation,
-              apartment_number: apartment.apartment_number,
-              floor_number: apartment.floor_number,
-              owner_name: apartment.owner_name,
-              type: 'obligation',
-              date: obligation.due_date || obligation.date,
-              amount: obligation.amount || obligation.price,
-              description: obligation.description || obligation.name
-            }));
-          })
+        axios.get(`/apartments/${apartment.id}/deposits`).then(response => {
+          return response.data.map(deposit => ({
+            ...deposit,
+            apartment_number: apartment.apartment_number,
+            floor_number: apartment.floor_number,
+            owner_name: apartment.owner_name,
+            type: 'deposit'
+          }));
+        })
       );
 
-      // Вземане на разходи
-      const expensesResponse = await axiosInstance.get(`http://localhost:5000/api/buildings/${buildingId}/expenses`);
-      console.log('Получени разходи:', expensesResponse.data);
-      
+      const obligationsPromises = allApartments.map(apartment =>
+        axios.get(`/apartments/${apartment.id}/obligations`).then(response => {
+          return response.data.map(obligation => ({
+            ...obligation,
+            apartment_number: apartment.apartment_number,
+            floor_number: apartment.floor_number,
+            owner_name: apartment.owner_name,
+            type: 'obligation',
+            date: obligation.due_date || obligation.date,
+            amount: obligation.amount || obligation.price,
+            description: obligation.description || obligation.name
+          }));
+        })
+      );
+
+      const expensesResponse = await axios.get(`/buildings/${buildingId}/expenses`);
       const expenses = expensesResponse.data.map(expense => {
-        console.log('Обработка на разход:', expense);
         const type = types.find(t => t.id === expense.expense_type_id);
         const expenseTypeName = type ? type.name : 'Неизвестен тип';
-        console.log('Име на тип разход:', expenseTypeName);
-        
         return {
           ...expense,
           type: 'expense',
@@ -145,7 +108,6 @@ const PaymentHistoryReport = ({ buildingId }) => {
         ...expenses
       ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-      console.log('Всички плащания:', allPayments);
       setPayments(allPayments);
       setError(null);
     } catch (err) {
@@ -321,4 +283,4 @@ const PaymentHistoryReport = ({ buildingId }) => {
   );
 };
 
-export default PaymentHistoryReport; 
+export default PaymentHistoryReport;
