@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const baseURL = 'http://localhost:5000/api';
-const baseURL = 'https://flatback.mandini.eu/api';
+const baseURL = 'http://localhost:5000/api';
+// const baseURL = 'https://flatback.mandini.eu/api';
 
 const instance = axios.create({
   baseURL,

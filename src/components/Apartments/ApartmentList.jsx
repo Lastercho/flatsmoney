@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../utils/axios'; // Използване на axios от utils
 import '../../styles/ApartmentList.css';
+import fetchRefreshes from '../../utils/fetchRefreshes';
 
 const ApartmentList = ({ floorId }) => {
   const [apartments, setApartments] = useState([]);
@@ -23,6 +24,7 @@ const ApartmentList = ({ floorId }) => {
     due_date: '',
     description: ''
   });
+  // const [refreshData, setRefreshData] = useState(false);
 
   useEffect(() => {
     if (floorId) {
@@ -37,6 +39,9 @@ const ApartmentList = ({ floorId }) => {
     }
   }, [selectedApartment]);
 
+  // const fetchRefreshes = async () => {
+  //   setRefreshData(!refreshData);
+  // }
   const fetchApartments = async () => {
     try {
       const response = await axios.get(`/floors/${floorId}/apartments`);
@@ -102,8 +107,7 @@ const ApartmentList = ({ floorId }) => {
       });
       
       setNewApartment({ apartment_number: '', owner_name: '', area: '' });
-      fetchApartments();
-      alert('Апартаментът е добавен успешно!');
+      await fetchApartments();
     } catch (error) {
       console.error('Грешка при добавяне на апартамент:', error);
       if (error.response?.data?.error) {
@@ -123,7 +127,10 @@ const ApartmentList = ({ floorId }) => {
     try {
       await axios.post(`/apartments/${selectedApartment.id}/deposits`, newDeposit);
       setNewDeposit({ amount: '', date: '', description: '' });
+
+      // Опресняване на данните за конкретния апартамент
       fetchDepositsAndObligations();
+      if (onDataChange) onDataChange(); // Извиква callback за опресняване в BuildingDetails
     } catch (error) {
       console.error('Грешка при добавяне на депозит:', error);
     }
@@ -134,17 +141,29 @@ const ApartmentList = ({ floorId }) => {
     try {
       await axios.post(`/apartments/${selectedApartment.id}/obligations`, newObligation);
       setNewObligation({ amount: '', due_date: '', description: '' });
+
+      // Опресняване на данните за конкретния апартамент
       fetchDepositsAndObligations();
+      if (onDataChange) onDataChange(); // Извиква callback за опресняване в BuildingDetails
     } catch (error) {
       console.error('Грешка при добавяне на задължение:', error);
     }
   };
 
+
+
   const handleDeleteApartment = async (id) => {
+    // Show a confirmation dialog
+    const isConfirmed = window.confirm('Сигурни ли сте, че искате да изтриете този апартамент?');
+
+    if (!isConfirmed) {
+      return; // Exit if the user cancels the action
+    }
+
     try {
       const response = await axios.delete(`/apartments/${id}`);
       alert(response.data.message);
-      fetchApartments();
+      await fetchApartments();
       if (selectedApartment && selectedApartment.id === id) {
         setSelectedApartment(null);
         setDeposits([]);
@@ -224,7 +243,12 @@ const ApartmentList = ({ floorId }) => {
                 type="number"
                 placeholder="Сума"
                 value={newDeposit.amount}
-                onChange={(e) => setNewDeposit({...newDeposit, amount: e.target.value})}
+                onChange={
+                (e) =>{
+                  setNewDeposit({...newDeposit, amount: e.target.value});
+                  fetchRefreshes();
+                }
+                }
               />
               <input
                 type="date"

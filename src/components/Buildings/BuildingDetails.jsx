@@ -24,9 +24,11 @@ const BuildingDetails = () => {
   const [floors, setFloors] = useState([]); // Добавяме state за етажите
   const [error, setError] = useState('');
   const [selectedFloor, setSelectedFloor] = useState(null);
+  const [refreshData, setRefreshData] = useState(false);
 
   useEffect(() => {
     fetchBuildingDetails();
+    // fetchRefreshes();
   }, [id]);
 
   const formatAmount = (amount) => {
@@ -44,6 +46,9 @@ const BuildingDetails = () => {
       return [];
     }
   };
+  const fetchRefreshes = async () => {
+    setRefreshData(!refreshData);
+  }
 
   const calculateSummary = (apartmentsData, expensesData = []) => {
     const totalDeposits = apartmentsData.reduce((sum, apartment) => 
@@ -118,7 +123,7 @@ const BuildingDetails = () => {
     try {
       const depositsResponse = await axios.get(`/apartments/${apartmentId}/deposits`);
       const deposits = depositsResponse.data;
-      
+
       const totalDeposits = deposits.reduce((sum, deposit) => sum + parseFloat(deposit.amount), 0);
 
       if (totalDeposits >= obligationAmount) {
@@ -163,7 +168,6 @@ const BuildingDetails = () => {
       const floorsResponse = await axios.get(`/buildings/${id}/floors`);
       setFloors(floorsResponse.data);
 
-      // След като се заредят основните данни, заредете и апартаментите с финансовите детайли
       await fetchAllApartments();
     } catch (error) {
       console.error('Грешка при зареждане на детайли за сградата:', error);
@@ -206,7 +210,10 @@ const BuildingDetails = () => {
         {showBulkObligations && (
             <BulkObligations
                 buildingId={id}
-                onSuccess={handleRefreshData}
+                onSuccess={() => {
+                    handleRefreshData();
+                    setShowBulkObligations(false);
+                }}
             />
         )}
 
@@ -264,7 +271,11 @@ const BuildingDetails = () => {
       {selectedFloor && (
         <div className="apartments-section">
           <h3>Апартаменти на етаж {selectedFloor.floor_number}</h3>
-          <ApartmentList floorId={selectedFloor.id} />
+          {/* При добавяне на депозит или задължение в ApartmentList, ще предадем callback за обновяване: */}
+          <ApartmentList
+            floorId={selectedFloor.id}
+            onDataChange={fetchAllApartments} // Предава се функция, която ще презареди всички апартаменти
+          />
         </div>
       )}
 
@@ -305,7 +316,12 @@ const BuildingDetails = () => {
                       {unpaidObligations.map(obligation => (
                         <button
                           key={obligation.id}
-                          onClick={() => handlePayment(apartment.id, obligation.id, parseFloat(obligation.amount))}
+                          onClick={
+                          () => {
+                            handlePayment(apartment.id, obligation.id, parseFloat(obligation.amount));
+                            fetchRefreshes();
+                          }
+                        }
                           className="payment-button"
                         >
                           Плати {formatAmount(obligation.amount)} лв.
