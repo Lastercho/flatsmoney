@@ -3,16 +3,17 @@ import axios from '../../utils/axios'; // Използване на axios от u
 import * as XLSX from 'xlsx';
 import '../../styles/Reports.css';
 
-const PaymentHistoryReport = ({ buildingId }) => {
+const PaymentHistoryReport = ({ buildingId, filterType }) => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [expenseTypes, setExpenseTypes] = useState([]);
+  // const [expenseTypes, setExpenseTypes] = useState([]);
   const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
     type: 'all' // all, deposits, obligations, expenses
   });
+  const reportType = filterType;
 
   useEffect(() => {
     if (buildingId) {
@@ -20,7 +21,7 @@ const PaymentHistoryReport = ({ buildingId }) => {
         try {
           setLoading(true);
           const expenseTypesResponse = await axios.get('/expense-types');
-          setExpenseTypes(expenseTypesResponse.data);
+          // setExpenseTypes(expenseTypesResponse.data);
           await fetchPaymentHistory(expenseTypesResponse.data);
         } catch (err) {
           console.error('Грешка при зареждане на данните:', err);
@@ -29,18 +30,17 @@ const PaymentHistoryReport = ({ buildingId }) => {
           setLoading(false);
         }
       };
-      
       loadData();
     }
   }, [buildingId]);
 
-  const getExpenseTypeName = (typeId) => {
-    console.log('Търсене на тип разход с ID:', typeId);
-    console.log('Налични типове разходи:', expenseTypes);
-    const type = expenseTypes.find(t => t.id === typeId);
-    console.log('Намерен тип разход:', type);
-    return type ? type.name : 'Неизвестен тип';
-  };
+  // const getExpenseTypeName = (typeId) => {
+  //   console.log('Търсене на тип разход с ID:', typeId);
+  //   console.log('Налични типове разходи:', expenseTypes);
+  //   const type = expenseTypes.find(t => t.id === typeId);
+  //   console.log('Намерен тип разход:', type);
+  //   return type ? type.name : 'Неизвестен тип';
+  // };
 
   const fetchPaymentHistory = async (types) => {
     try {
@@ -129,7 +129,19 @@ const PaymentHistoryReport = ({ buildingId }) => {
 
   const filterPayments = (payments) => {
     return payments.filter(payment => {
-      if (payment.type ==='obligation' && !payment.is_paid) return false;
+      console.log(reportType)
+      if (reportType==='building_expenses'){
+        if (payment.type ==='obligation' && !payment.is_paid) return false;
+        if (payment.type ==='deposit') return false;
+      }
+      if (reportType==='unpaid_expenses'){
+        if (payment.type ==='obligation' && payment.is_paid) return false;
+        if (payment.type ==='deposit') return false;
+        if (payment.type ==='expense') return false;
+      }
+      if (reportType==='payments'){
+        if (payment.type ==='obligation' && !payment.is_paid) return false;
+      }
       const paymentDate = new Date(payment.date);
       const startDate = filters.startDate ? new Date(filters.startDate + 'T00:00:00') : null;
       const endDate = filters.endDate ? new Date(filters.endDate + 'T23:59:59') : null;
@@ -208,7 +220,9 @@ const PaymentHistoryReport = ({ buildingId }) => {
 
   return (
     <div className="report-container">
-      <h2>История на плащанията</h2>
+      {reportType==='building_expenses' && (<h2>Финансов отчет на сградата</h2>)}
+      {reportType==='unpaid_expenses' && (<h2>Неплатени задължения за избрана сграда</h2>)}
+      {reportType==='payments' && (<h2>История на плащанията</h2>)}
 
       <div className="filters-section">
         <div className="filter-group">

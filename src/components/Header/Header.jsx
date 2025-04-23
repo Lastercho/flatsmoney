@@ -16,7 +16,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-content">
-        <h1 className="header-title">Жилищна сграда</h1>
+        <h1 className="header-title">Помощник на домоуправителя</h1>
         <button className="logout-button" onClick={handleLogout}>
           Изход
         </button>
