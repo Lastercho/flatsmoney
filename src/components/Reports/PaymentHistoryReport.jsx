@@ -75,8 +75,10 @@ const PaymentHistoryReport = ({ buildingId }) => {
             owner_name: apartment.owner_name,
             type: 'obligation',
             date: obligation.due_date || obligation.date,
-            amount: obligation.amount || obligation.price,
-            description: obligation.description || obligation.name
+            amount: obligation.amount || obligation.amount,
+            description: obligation.description || obligation.name,
+            is_paid: obligation.is_paid,
+
           }));
         })
       );
@@ -99,7 +101,8 @@ const PaymentHistoryReport = ({ buildingId }) => {
 
       const [deposits, obligations] = await Promise.all([
         Promise.all(depositsPromises),
-        Promise.all(obligationsPromises)
+        Promise.all(obligationsPromises),
+
       ]);
 
       const allPayments = [
@@ -126,6 +129,7 @@ const PaymentHistoryReport = ({ buildingId }) => {
 
   const filterPayments = (payments) => {
     return payments.filter(payment => {
+      if (!payment.is_paid) return false;
       const paymentDate = new Date(payment.date);
       const startDate = filters.startDate ? new Date(filters.startDate + 'T00:00:00') : null;
       const endDate = filters.endDate ? new Date(filters.endDate + 'T23:59:59') : null;
