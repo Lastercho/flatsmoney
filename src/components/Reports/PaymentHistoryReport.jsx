@@ -129,7 +129,7 @@ const PaymentHistoryReport = ({ buildingId }) => {
 
   const filterPayments = (payments) => {
     return payments.filter(payment => {
-      if (!payment.is_paid) return false;
+      if (payment.type ==='obligation' && !payment.is_paid) return false;
       const paymentDate = new Date(payment.date);
       const startDate = filters.startDate ? new Date(filters.startDate + 'T00:00:00') : null;
       const endDate = filters.endDate ? new Date(filters.endDate + 'T23:59:59') : null;
