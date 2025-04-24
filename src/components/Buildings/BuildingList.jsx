@@ -49,6 +49,13 @@ const BuildingList = ({ onBuildingSelect }) => {
   };
 
   const handleDelete = async (id) => {
+    // Show a confirmation dialog
+    const isConfirmed = window.confirm('Сигурни ли сте, че искате да изтриете тази сграда?');
+
+    if (!isConfirmed) {
+      return; // Exit if the user cancels the action
+    }
+
     try {
       await axios.delete(`/buildings/${id}`);
       fetchBuildings();
@@ -64,7 +71,7 @@ const BuildingList = ({ onBuildingSelect }) => {
   return (
     <div className="building-list">
       <h2>Управление на сгради</h2>
-      
+
       <form onSubmit={handleSubmit} className="building-form">
         <input
           type="text"

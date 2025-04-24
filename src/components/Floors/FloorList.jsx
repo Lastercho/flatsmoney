@@ -40,7 +40,7 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!building) {
       alert('Грешка: Информацията за сградата не е налична');
       return;
@@ -64,7 +64,7 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
         floor_number: parseInt(newFloor.floor_number),
         total_apartments: parseInt(newFloor.total_apartments)
       };
-      
+
       await axios.post(`/buildings/${buildingId}/floors`, floorData);
       setNewFloor({ floor_number: '', total_apartments: '' });
       fetchFloors();
@@ -79,6 +79,13 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
   };
 
   const handleDelete = async (floorId) => {
+    // Show a confirmation dialog
+    const isConfirmed = window.confirm('Сигурни ли сте, че искате да изтриете този етаж?');
+
+    if (!isConfirmed) {
+      return; // Exit if the user cancels the action
+    }
+
     try {
       await axios.delete(`/floors/${floorId}`);
       fetchFloors();
@@ -103,7 +110,7 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
   return (
     <div className="floor-list">
       <h2>Управление на етажи</h2>
-      
+
       <form onSubmit={handleSubmit} className="floor-form">
         <div className="form-group">
           <input

@@ -2,12 +2,12 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  background-color: var(--dark-bg-primary);
-  color: var(--dark-text-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .building-list h2 {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
   margin-bottom: 20px;
   text-align: left;
 }
@@ -17,27 +17,27 @@
   gap: 10px;
   margin-bottom: 20px;
   padding: 20px;
-  background-color: var(--dark-bg-secondary);
+  background-color: var(--bg-secondary);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .building-form input {
   padding: 8px;
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
   border-radius: 4px;
   flex: 1;
-  background-color: var(--dark-bg-tertiary);
-  color: var(--dark-text-primary);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 .building-form input::placeholder {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .building-form button {
   padding: 8px 16px;
-  background-color: var(--dark-primary);
+  background-color: var(--primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -46,7 +46,7 @@
 }
 
 .building-form button:hover {
-  background-color: var(--dark-primary-hover);
+  background-color: var(--primary-hover);
   transform: translateY(-1px);
 }
 
@@ -58,17 +58,17 @@
 
 .building-card {
   padding: 20px;
-  background-color: var(--dark-bg-secondary);
+  background-color: var(--bg-secondary);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   cursor: pointer;
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
 }
 
 .building-card.selected {
-  border: 2px solid var(--dark-primary);
-  background-color: var(--dark-bg-tertiary);
+  border: 2px solid var(--primary);
+  background-color: var(--bg-tertiary);
 }
 
 .building-card:hover {
@@ -78,18 +78,18 @@
 
 .building-card h3 {
   margin-top: 0;
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .building-card p {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
   margin: 8px 0;
 }
 
 .building-card button {
   padding: 8px 16px;
-  background-color: var(--dark-error);
+  background-color: var(--error);
   color: white;
   border: none;
   border-radius: 4px;
@@ -99,6 +99,6 @@
 }
 
 .building-card button:hover {
-  background-color: #d63031;
+  background-color: var(--error);
   transform: translateY(-1px);
 }

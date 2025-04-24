@@ -1,14 +1,14 @@
 .building-details {
   padding: 20px;
-  background-color: var(--dark-bg-secondary);
+  background-color: var(--bg-secondary);
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   margin-top: 20px;
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .building-details h2, .building-details h3 {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
   margin-bottom: 20px;
   text-align: left;
 }
@@ -16,9 +16,9 @@
 .summary-section {
   margin-bottom: 30px;
   padding: 20px;
-  background-color: var(--dark-bg-tertiary);
+  background-color: var(--bg-tertiary);
   border-radius: 10px;
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .summary-grid {
@@ -32,18 +32,18 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  background-color: var(--dark-surface);
+  background-color: var(--surface);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .summary-item span {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
 }
 
 .summary-item .amount {
-  color: var(--dark-success);
+  color: var(--success);
   font-weight: bold;
 }
 
@@ -55,7 +55,7 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: var(--dark-surface);
+  background-color: var(--surface);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -63,12 +63,12 @@ table {
 th, td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid var(--dark-border);
-  color: var(--dark-text-primary);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
 }
 
 th {
-  background-color: var(--dark-bg-tertiary);
+  background-color: var(--bg-tertiary);
   font-weight: 600;
 }
 
@@ -78,7 +78,7 @@ tr:hover {
 
 .payment-button {
   padding: 8px 12px;
-  background-color: var(--dark-success);
+  background-color: var(--success);
   color: #ffffff;
   border: none;
   border-radius: 6px;
@@ -133,7 +133,7 @@ tr:hover {
 }
 
 .building-header h2 {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
   margin: 0;
   font-size: 24px;
 }
@@ -154,32 +154,32 @@ tr:hover {
 }
 
 .btn-edit {
-  background-color: var(--dark-primary);
+  background-color: var(--primary);
   color: white;
 }
 
 .btn-edit:hover {
-  background-color: var(--dark-primary-hover);
+  background-color: var(--primary-hover);
   transform: translateY(-2px);
 }
 
 .btn-back {
-  background-color: var(--dark-surface);
-  color: var(--dark-text-primary);
-  border: 1px solid var(--dark-border);
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
 .btn-back:hover {
-  background-color: var(--dark-bg-tertiary);
+  background-color: var(--bg-tertiary);
   transform: translateY(-2px);
 }
 
 .building-info-card {
-  background: var(--dark-bg-secondary);
+  background: var(--bg-secondary);
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .info-group {
@@ -192,13 +192,13 @@ tr:hover {
 
 .info-group label {
   display: block;
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
   font-size: 14px;
   margin-bottom: 5px;
 }
 
 .info-group p {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
   font-size: 16px;
   margin: 0;
 }
@@ -206,18 +206,18 @@ tr:hover {
 .loading {
   text-align: center;
   padding: 40px;
-  color: var(--dark-primary);
+  color: var(--primary);
   font-size: 18px;
 }
 
 .error {
   text-align: center;
   padding: 20px;
-  color: var(--dark-error);
+  color: var(--error);
   background: rgba(255, 107, 107, 0.1);
   border-radius: 8px;
   margin: 20px 0;
-  border: 1px solid var(--dark-error);
+  border: 1px solid var(--error);
 }
 
 @media (max-width: 768px) {

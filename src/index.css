@@ -16,25 +16,75 @@
   --dark-error: #ff6b6b;
   --dark-success: #66bb6a;
   --dark-warning: #ffca28;
-  
+
+  /* Дефиниране на светла цветова схема като глобални променливи */
+  --light-bg-primary: #f8f9fa;
+  --light-bg-secondary: #ffffff;
+  --light-bg-tertiary: #e9ecef;
+  --light-surface: #dee2e6;
+  --light-border: #ced4da;
+  --light-text-primary: #212529;
+  --light-text-secondary: #6c757d;
+  --light-primary: #6066fd;
+  --light-primary-hover: #4954f4;
+  --light-error: #dc3545;
+  --light-success: #28a745;
+  --light-warning: #ffc107;
+
+  /* Default to dark theme */
   color-scheme: dark;
-  color: var(--dark-text-primary);
-  background-color: var(--dark-bg-primary);
+
+  /* CSS variables that will change based on theme */
+  --bg-primary: var(--dark-bg-primary);
+  --bg-secondary: var(--dark-bg-secondary);
+  --bg-tertiary: var(--dark-bg-tertiary);
+  --surface: var(--dark-surface);
+  --border: var(--dark-border);
+  --text-primary: var(--dark-text-primary);
+  --text-secondary: var(--dark-text-secondary);
+  --primary: var(--dark-primary);
+  --primary-hover: var(--dark-primary-hover);
+  --error: var(--dark-error);
+  --success: var(--dark-success);
+  --warning: var(--dark-warning);
+
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Add smooth transition for theme changes */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light theme variables */
+[data-theme="light"] {
+  color-scheme: light;
+  --bg-primary: var(--light-bg-primary);
+  --bg-secondary: var(--light-bg-secondary);
+  --bg-tertiary: var(--light-bg-tertiary);
+  --surface: var(--light-surface);
+  --border: var(--light-border);
+  --text-primary: var(--light-text-primary);
+  --text-secondary: var(--light-text-secondary);
+  --primary: var(--light-primary);
+  --primary-hover: var(--light-primary-hover);
+  --error: var(--light-error);
+  --success: var(--light-success);
+  --warning: var(--light-warning);
 }
 
 a {
   font-weight: 500;
-  color: var(--dark-primary);
+  color: var(--primary);
   text-decoration: inherit;
 }
 
 a:hover {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 body {
@@ -43,7 +93,7 @@ body {
   display: flex;
   width: 100%;
   min-height: 100vh;
-  background-color: var(--dark-bg-primary);
+  background-color: var(--bg-primary);
 }
 
 #root {
@@ -53,7 +103,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
   margin-top: 0;
 }
 
@@ -63,7 +113,7 @@ h1 {
 }
 
 p {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
   margin: 0.5em 0;
 }
 
@@ -74,14 +124,14 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: var(--dark-surface);
-  color: var(--dark-text-primary);
+  background-color: var(--surface);
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
 button:hover {
-  background-color: var(--dark-primary);
+  background-color: var(--primary);
   color: #ffffff;
 }
 
@@ -92,9 +142,9 @@ button:focus-visible {
 
 /* Глобални стилове за input полета */
 input, select, textarea {
-  background-color: var(--dark-bg-tertiary);
-  border: 1px solid var(--dark-border);
-  color: var(--dark-text-primary);
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
   padding: 0.8em;
   border-radius: 6px;
   font-size: 1em;
@@ -102,12 +152,12 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--dark-primary);
+  border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(136, 102, 255, 0.25);
 }
 
 input::placeholder, textarea::placeholder {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 /* Стилове за основното съдържание */

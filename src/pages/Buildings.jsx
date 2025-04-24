@@ -4,7 +4,6 @@ import FloorList from '../components/Floors/FloorList';
 import ApartmentList from '../components/Apartments/ApartmentList';
 import BuildingDetails from '../components/Buildings/BuildingDetails';
 import '../styles/Buildings.css';
-import Reports from "./Reports.jsx";
 
 const Buildings = () => {
   const [selectedBuilding, setSelectedBuilding] = useState(null);
@@ -22,7 +21,7 @@ const Buildings = () => {
   return (
     <div className="buildings-page">
       <BuildingList onBuildingSelect={handleBuildingSelect} />
-      
+
       {selectedBuilding && (
         <>
           <FloorList 
@@ -32,11 +31,10 @@ const Buildings = () => {
           <BuildingDetails buildingId={selectedBuilding.id} />
         </>
       )}
-      
+
       {selectedFloor && (
         <ApartmentList floorId={selectedFloor.id} />
       )}
-      <Reports/>
     </div>
   );
 };

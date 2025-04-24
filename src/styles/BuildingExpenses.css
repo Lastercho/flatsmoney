@@ -1,13 +1,13 @@
 .building-expenses {
   padding: 20px;
-  background-color: var(--dark-bg-secondary);
+  background-color: var(--bg-secondary);
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .building-expenses h2 {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
   margin-bottom: 20px;
 }
 
@@ -17,36 +17,36 @@
   gap: 15px;
   margin-bottom: 30px;
   padding: 20px;
-  background-color: var(--dark-bg-tertiary);
+  background-color: var(--bg-tertiary);
   border-radius: 10px;
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .expense-form select,
 .expense-form input {
   padding: 12px;
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 14px;
-  color: var(--dark-text-primary);
-  background-color: var(--dark-surface);
+  color: var(--text-primary);
+  background-color: var(--surface);
 }
 
 .expense-form select option {
-  color: var(--dark-text-primary);
-  background-color: var(--dark-surface);
+  color: var(--text-primary);
+  background-color: var(--surface);
 }
 
 .expense-form select:focus,
 .expense-form input:focus {
   outline: none;
-  border-color: var(--dark-primary);
+  border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(136, 102, 255, 0.25);
 }
 
 .expense-form button {
   padding: 10px 20px;
-  background-color: var(--dark-primary);
+  background-color: var(--primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -55,7 +55,7 @@
 }
 
 .expense-form button:hover {
-  background-color: var(--dark-primary-hover);
+  background-color: var(--primary-hover);
   transform: translateY(-2px);
 }
 
@@ -67,7 +67,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
-  background-color: var(--dark-surface);
+  background-color: var(--surface);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -76,23 +76,23 @@
 .expenses-list td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid var(--dark-border);
-  color: var(--dark-text-primary);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
 }
 
 .expenses-list th {
-  background-color: var(--dark-bg-tertiary);
-  color: var(--dark-text-primary);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .expenses-list tr:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--bg-tertiary);
 }
 
 .delete-button {
   padding: 6px 12px;
-  background-color: var(--dark-error);
+  background-color: var(--error);
   color: white;
   border: none;
   border-radius: 6px;
@@ -101,15 +101,15 @@
 }
 
 .delete-button:hover {
-  background-color: #d63031;
+  background-color: var(--error);
   transform: translateY(-2px);
 }
 
 .error {
-  color: var(--dark-error);
+  color: var(--error);
   padding: 10px;
   background-color: rgba(255, 107, 107, 0.1);
-  border: 1px solid var(--dark-error);
+  border: 1px solid var(--error);
   border-radius: 6px;
   margin-bottom: 20px;
 }

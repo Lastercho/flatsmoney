@@ -5,7 +5,7 @@
 }
 
 .apartment-list h2 {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
   margin-bottom: 20px;
   text-align: left;
 }
@@ -15,28 +15,28 @@
   gap: 10px;
   margin-bottom: 20px;
   padding: 20px;
-  background-color: var(--dark-bg-secondary);
+  background-color: var(--bg-secondary);
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .apartment-form input {
   padding: 10px;
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
   border-radius: 6px;
   flex: 1;
-  background-color: var(--dark-bg-tertiary);
-  color: var(--dark-text-primary);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 .apartment-form input::placeholder {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .apartment-form button {
   padding: 10px 16px;
-  background-color: var(--dark-primary);
+  background-color: var(--primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -45,7 +45,7 @@
 }
 
 .apartment-form button:hover {
-  background-color: var(--dark-primary-hover);
+  background-color: var(--primary-hover);
   transform: translateY(-2px);
 }
 
@@ -58,39 +58,39 @@
 
 .apartment-card {
   padding: 20px;
-  background-color: var(--dark-bg-secondary);
+  background-color: var(--bg-secondary);
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .apartment-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-  border-color: var(--dark-primary);
+  border-color: var(--primary);
 }
 
 .apartment-card.selected {
-  border: 2px solid var(--dark-primary);
+  border: 2px solid var(--primary);
   box-shadow: 0 0 0 2px rgba(136, 102, 255, 0.25);
 }
 
 .apartment-card h3 {
   margin-top: 0;
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .apartment-card p {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
   margin: 8px 0;
 }
 
 .apartment-card button {
   padding: 8px 16px;
-  background-color: var(--dark-error);
+  background-color: var(--error);
   color: white;
   border: none;
   border-radius: 6px;
@@ -100,25 +100,25 @@
 }
 
 .apartment-card button:hover {
-  background-color: #d63031;
+  background-color: var(--error);
   transform: translateY(-2px);
 }
 
 .apartment-details {
-  background-color: var(--dark-bg-secondary);
+  background-color: var(--bg-secondary);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .deposits-section,
 .obligations-section {
   margin-top: 20px;
   padding: 20px;
-  background-color: var(--dark-bg-tertiary);
+  background-color: var(--bg-tertiary);
   border-radius: 10px;
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .deposit-form,
@@ -131,22 +131,22 @@
 .deposit-form input,
 .obligation-form input {
   padding: 10px;
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
   border-radius: 6px;
   flex: 1;
-  background-color: var(--dark-bg-tertiary);
-  color: var(--dark-text-primary);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 .deposit-form input::placeholder,
 .obligation-form input::placeholder {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .deposit-form button,
 .obligation-form button {
   padding: 10px 16px;
-  background-color: var(--dark-success);
+  background-color: var(--success);
   color: white;
   border: none;
   border-radius: 6px;
@@ -156,7 +156,7 @@
 
 .deposit-form button:hover,
 .obligation-form button:hover {
-  background-color: #27ae60;
+  background-color: var(--success);
   transform: translateY(-2px);
 }
 
@@ -170,14 +170,14 @@
 .deposit-item,
 .obligation-item {
   padding: 15px;
-  background-color: var(--dark-surface);
+  background-color: var(--surface);
   border-radius: 6px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--border);
 }
 
 .deposit-item p,
 .obligation-item p {
   margin: 5px 0;
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
 }
