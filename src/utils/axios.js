@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:5000/api';
-// const baseURL = 'https://flatback.mandini.eu/api';
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'https://flatback.mandini.eu/api';
 
 const instance = axios.create({
   baseURL,
@@ -36,7 +35,7 @@ instance.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      window.location.href = '/#/login';
     }
     return Promise.reject(error);
   }

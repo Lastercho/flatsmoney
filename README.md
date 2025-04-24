@@ -1,11 +1,39 @@
-# React + TypeScript + Vite
+# Flats Money
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application for managing apartment buildings, floors, and payments.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Manage buildings, floors, and apartments
+- Track payments and deposits
+- Generate reports
+
+## Technologies
+
+- React 19
+- TypeScript
+- Vite
+- Docker
+- GitHub Actions for CI/CD
+
+## Deployment
+
+This project is configured for automatic deployment to GitHub Pages using GitHub Actions. When you push to the main branch, the application will be automatically built and deployed to GitHub Pages.
+
+### Manual Deployment
+
+You can also deploy the application manually using the following commands:
+
+```bash
+# Install dependencies
+npm install
+
+# Build the application
+npm run build
+
+# Deploy to GitHub Pages
+npm run deploy
+```
 
 ## Expanding the ESLint configuration
 
