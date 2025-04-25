@@ -111,27 +111,29 @@ const FloorList = ({ buildingId, onFloorSelect }) => {
     <div className="floor-list">
       <h2>Управление на етажи</h2>
 
-      <form onSubmit={handleSubmit} className="floor-form">
-        <div className="form-group">
-          <input
-            type="number"
-            placeholder="Номер на етаж"
-            value={newFloor.floor_number}
-            onChange={(e) => setNewFloor({ ...newFloor, floor_number: e.target.value })}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="number"
-            placeholder="Брой апартаменти"
-            value={newFloor.total_apartments}
-            onChange={(e) => setNewFloor({ ...newFloor, total_apartments: e.target.value })}
-            required
-          />
-        </div>
-        <button type="submit">Добави етаж</button>
-      </form>
+      {building && floors.length < building.total_floors && (
+        <form onSubmit={handleSubmit} className="floor-form">
+          <div className="form-group">
+            <input
+              type="number"
+              placeholder="Номер на етаж"
+              value={newFloor.floor_number}
+              onChange={(e) => setNewFloor({ ...newFloor, floor_number: e.target.value })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="number"
+              placeholder="Брой апартаменти"
+              value={newFloor.total_apartments}
+              onChange={(e) => setNewFloor({ ...newFloor, total_apartments: e.target.value })}
+              required
+            />
+          </div>
+          <button type="submit">Добави етаж</button>
+        </form>
+      )}
 
       <div className="floors-grid">
         {floors.map(floor => (

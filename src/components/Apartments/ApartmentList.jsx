@@ -105,7 +105,7 @@ const ApartmentList = ({ floorId }) => {
         owner_name: newApartment.owner_name.trim(),
         area: parseFloat(newApartment.area)
       });
-      
+
       setNewApartment({ apartment_number: '', owner_name: '', area: '' });
       await fetchApartments();
     } catch (error) {
@@ -186,33 +186,35 @@ const ApartmentList = ({ floorId }) => {
   return (
     <div className="apartment-list">
       <h2>Управление на апартаменти - Етаж {floor?.floor_number}</h2>
-      
-      <form onSubmit={handleSubmitApartment} className="apartment-form">
-        <input
-          type="text"
-          placeholder="Номер на апартамент"
-          value={newApartment.apartment_number}
-          onChange={(e) => setNewApartment({...newApartment, apartment_number: e.target.value})}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Име на собственика"
-          value={newApartment.owner_name}
-          onChange={(e) => setNewApartment({...newApartment, owner_name: e.target.value})}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Площ (кв.м)"
-          value={newApartment.area}
-          onChange={(e) => setNewApartment({...newApartment, area: e.target.value})}
-          min="0.01"
-          step="0.01"
-          required
-        />
-        <button type="submit">Добави апартамент</button>
-      </form>
+
+      {floor && apartments.length < floor.total_apartments && (
+        <form onSubmit={handleSubmitApartment} className="apartment-form">
+          <input
+            type="text"
+            placeholder="Номер на апартамент"
+            value={newApartment.apartment_number}
+            onChange={(e) => setNewApartment({...newApartment, apartment_number: e.target.value})}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Име на собственика"
+            value={newApartment.owner_name}
+            onChange={(e) => setNewApartment({...newApartment, owner_name: e.target.value})}
+            required
+          />
+          <input
+            type="number"
+            placeholder="Площ (кв.м)"
+            value={newApartment.area}
+            onChange={(e) => setNewApartment({...newApartment, area: e.target.value})}
+            min="0.01"
+            step="0.01"
+            required
+          />
+          <button type="submit">Добави апартамент</button>
+        </form>
+      )}
 
       <div className="apartments-grid">
         {apartments.map(apartment => (
@@ -235,7 +237,7 @@ const ApartmentList = ({ floorId }) => {
       {selectedApartment && (
         <div className="apartment-details">
           <h3>Детайли за апартамент {selectedApartment.apartment_number}</h3>
-          
+
           <div className="deposits-section">
             <h4>Депозити</h4>
             <form onSubmit={handleSubmitDeposit} className="deposit-form">
