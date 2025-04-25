@@ -181,3 +181,22 @@
   margin: 5px 0;
   color: var(--text-primary);
 }
+
+.deposit-item .delete-button,
+.obligation-item .delete-button {
+  padding: 6px 12px;
+  background-color: var(--error);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.deposit-item .delete-button:hover,
+.obligation-item .delete-button:hover {
+  background-color: var(--error-hover, #d32f2f);
+  transform: translateY(-2px);
+}

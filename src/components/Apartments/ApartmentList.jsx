@@ -3,7 +3,7 @@ import axios from '../../utils/axios'; // Използване на axios от u
 import '../../styles/ApartmentList.css';
 import fetchRefreshes from '../../utils/fetchRefreshes';
 
-const ApartmentList = ({ floorId }) => {
+const ApartmentList = ({ floorId , onDataChange}) => {
   const [apartments, setApartments] = useState([]);
   const [floor, setFloor] = useState(null);
   const [newApartment, setNewApartment] = useState({
@@ -150,6 +150,45 @@ const ApartmentList = ({ floorId }) => {
     }
   };
 
+  const handleDeleteDeposit = async (depositId) => {
+    // Show a confirmation dialog
+    const isConfirmed = window.confirm('Сигурни ли сте, че искате да изтриете този депозит?');
+
+    if (!isConfirmed) {
+      return; // Exit if the user cancels the action
+    }
+
+    try {
+      await axios.delete(`/apartments/${selectedApartment.id}/deposits/${depositId}`);
+      // Refresh the deposits list
+      fetchDepositsAndObligations();
+      if (onDataChange) onDataChange(); // Invoke callback for refreshing in BuildingDetails
+    } catch (error) {
+      console.error('Грешка при изтриване на депозит:', error);
+      alert('Възникна грешка при изтриване на депозита!');
+    }
+  };
+
+  const handleDeleteObligation = async (obligationId) => {
+    // Show a confirmation dialog
+    const isConfirmed = window.confirm('Сигурни ли сте, че искате да изтриете това задължение?');
+
+    if (!isConfirmed) {
+      return; // Exit if the user cancels the action
+    }
+
+    try {
+      await axios.delete(`/apartments/${selectedApartment.id}/obligations/${obligationId}`);
+      // Refresh the obligations list
+      fetchDepositsAndObligations();
+      if (onDataChange) onDataChange(); // Invoke callback for refreshing in BuildingDetails
+    } catch (error) {
+      
+      console.error('Грешка при изтриване на задължение:', error);
+      alert('Възникна грешка при изтриване на задължението!');
+    }
+  };
+
 
 
   const handleDeleteApartment = async (id) => {
@@ -272,6 +311,15 @@ const ApartmentList = ({ floorId }) => {
                   <p>Сума: {deposit.amount} лв.</p>
                   <p>Дата: {new Date(deposit.date).toLocaleDateString()}</p>
                   <p>Описание: {deposit.description}</p>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteDeposit(deposit.id);
+                    }}
+                    className="delete-button"
+                  >
+                    Изтрий
+                  </button>
                 </div>
               ))}
             </div>
@@ -306,6 +354,15 @@ const ApartmentList = ({ floorId }) => {
                   <p>Сума: {obligation.amount} лв.</p>
                   <p>Краен срок: {new Date(obligation.due_date).toLocaleDateString()}</p>
                   <p>Описание: {obligation.description}</p>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteObligation(obligation.id);
+                    }}
+                    className="delete-button"
+                  >
+                    Изтрий
+                  </button>
                 </div>
               ))}
             </div>
