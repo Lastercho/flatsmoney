@@ -1,6 +1,28 @@
-# React + TypeScript + Vite
+# Flats Money - React Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the React frontend for the Flats Money application, built with Vite, React, and TypeScript.
+
+## API Configuration
+
+The application automatically detects whether it's running locally or in a production environment and sets the appropriate API base URL:
+
+- In local development: `http://localhost:5000/api`
+- In production (Docker): `https://flatback.mandini.eu/api`
+
+This detection happens in `src/utils/axios.js` and follows this logic:
+1. First, it checks for the `VITE_API_BASE_URL` environment variable
+2. If not found, it checks if the hostname is localhost or 127.0.0.1
+3. Based on these checks, it sets the appropriate baseURL for API requests
+
+### Environment Variables
+
+- `.env` - Contains development environment variables
+- `.env.production` - Contains production environment variables
+- Docker environment variables are set in `docker-compose.yml`
+
+### Docker Configuration
+
+The Docker image uses the `latest` tag, so it will always use the most recent version without manual updates to the version number.
 
 Currently, two official plugins are available:
 
