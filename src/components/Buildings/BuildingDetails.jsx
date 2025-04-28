@@ -25,10 +25,8 @@ const BuildingDetails = () => {
   const [error, setError] = useState('');
   const [selectedFloor, setSelectedFloor] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
-
   useEffect(() => {
     fetchBuildingDetails();
-    // fetchRefreshes();
   }, [id]);
 
   const formatAmount = (amount) => {
@@ -130,7 +128,7 @@ const BuildingDetails = () => {
         for (const deposit of deposits) {
           await axios.delete(`/apartments/${apartmentId}/deposits/${deposit.id}`);
         }
-
+  
         const remainingAmount = totalDeposits - obligationAmount;
         if (remainingAmount > 0) {
           await axios.post(`/apartments/${apartmentId}/deposits`, {
@@ -139,12 +137,21 @@ const BuildingDetails = () => {
             description: 'Остатък след плащане на задължение'
           });
         }
-      }
+  
+        // Обновяване на задължението с paid_from_deposit: true
+        await axios.put(`/obligations/${obligationId}`, {
+          is_paid: true,
+          is_paid_from_deposit: true, // Отбелязваме, че е платено от депозит
+          payment_date: new Date().toISOString(),
+        });
+      } else {
 
       await axios.put(`/obligations/${obligationId}`, {
         is_paid: true,
-        payment_date: new Date().toISOString()
+        is_paid_from_deposit: false,
+        payment_date: new Date().toISOString(),
       });
+      }
 
       fetchAllApartments();
     } catch (error) {
