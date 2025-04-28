@@ -1,8 +1,23 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:5000/api';
-// const baseURL = 'https://flatback.mandini.eu/api';
+// Determine the baseURL based on the environment
+let baseURL;
 
+// First check if there's an environment variable defined
+if (import.meta.env.VITE_API_BASE_URL) {
+  baseURL = import.meta.env.VITE_API_BASE_URL;
+  console.log('Using environment variable for baseURL:', baseURL);
+} 
+// If no environment variable, determine based on hostname
+else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  // Local development
+  baseURL = 'http://localhost:5000/api';
+} else {
+  // Production environment (Docker container)
+  baseURL = 'https://flatback.mandini.eu/api';
+}
+
+console.log('Using API baseURL:', baseURL);
 const instance = axios.create({
   baseURL,
   headers: {
