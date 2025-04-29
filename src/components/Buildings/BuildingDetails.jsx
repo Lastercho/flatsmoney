@@ -183,7 +183,17 @@ const BuildingDetails = () => {
     }
   };
 
-
+  const handleDeleteBuilding = async () => {
+    if (window.confirm('Сигурни ли сте, че искате да изтриете тази сграда? Това действие е необратимо.')) {
+      try {
+        await axios.delete(`/buildings/${id}`);
+        navigate('/buildings');
+      } catch (error) {
+        console.error('Грешка при изтриване на сградата:', error);
+        setError('Възникна грешка при изтриване на сградата');
+      }
+    }
+  };
 
   if (loading) return <div className="loading">Зареждане...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -195,10 +205,10 @@ const BuildingDetails = () => {
         <h2>{building.name}</h2>
         <div className="building-actions">
           <button 
-            className="btn btn-edit"
-            onClick={() => navigate(`/buildings/${id}/edit`)}
+            className="btn btn-delete"
+            onClick={handleDeleteBuilding}
           >
-            Редактирай
+            Изтрий сграда
           </button>
           <button
               className="toggle-bulk-obligations"
