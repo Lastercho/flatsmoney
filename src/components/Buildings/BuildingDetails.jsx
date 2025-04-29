@@ -183,21 +183,7 @@ const BuildingDetails = () => {
     }
   };
 
-  const handleDelete = async () => {
-    const isConfirmed = window.confirm('Сигурни ли сте, че искате да изтриете тази сграда? Всички свързани етажи и апартаменти също ще бъдат изтрити.');
-    
-    if (!isConfirmed) {
-      return;
-    }
 
-    try {
-      await axios.delete(`/buildings/${id}`);
-      navigate('/buildings');
-    } catch (error) {
-      console.error('Грешка при изтриване на сграда:', error);
-      setError('Възникна грешка при изтриване на集团有限公司');
-    }
-  };
 
   if (loading) return <div className="loading">Зареждане...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -214,18 +200,13 @@ const BuildingDetails = () => {
           >
             Редактирай
           </button>
-          <button 
-            className="btn btn-delete"
-            onClick={handleDelete}
-          >
-            Изтрий
-          </button>
           <button
-            className="toggle-bulk-obligations"
-            onClick={() => setShowBulkObligations(!showBulkObligations)}
+              className="toggle-bulk-obligations"
+              onClick={() => setShowBulkObligations(!showBulkObligations)}
           >
             {showBulkObligations ? 'Скрий' : 'Добави задължение към всички апартаменти'}
           </button>
+
           <button 
             className="btn btn-back"
             onClick={() => navigate('/buildings')}
@@ -234,14 +215,15 @@ const BuildingDetails = () => {
           </button>
         </div>
         {showBulkObligations && (
-          <BulkObligations
-            buildingId={id}
-            onSuccess={() => {
-              handleRefreshData();
-              setShowBulkObligations(false);
-            }}
-          />
+            <BulkObligations
+                buildingId={id}
+                onSuccess={() => {
+                    handleRefreshData();
+                    setShowBulkObligations(false);
+                }}
+            />
         )}
+
       </div>
 
       <div className="building-info-card">

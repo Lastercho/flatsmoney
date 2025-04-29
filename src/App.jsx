@@ -11,7 +11,6 @@ const Register = lazy(() => import("./components/Auth/Register"));
 const Buildings = lazy(() => import("./components/Buildings/Buildings"));
 const BuildingDetails = lazy(() => import("./components/Buildings/BuildingDetails"));
 const BuildingForm = lazy(() => import("./components/Buildings/BuildingForm"));
-const BuildingEdit = lazy(() => import("./components/Buildings/BuildingEdit"));
 const Reports = lazy(() => import("./pages/Reports"));
 
 // Loading component
@@ -47,14 +46,6 @@ const App = React.memo(() => {
                 element={
                   <PrivateRoute>
                     <BuildingDetails />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/buildings/:id/edit"
-                element={
-                  <PrivateRoute>
-                    <BuildingEdit />
                   </PrivateRoute>
                 }
               />
