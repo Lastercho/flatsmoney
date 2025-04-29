@@ -1,21 +1,26 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./components/Auth/Login";
-import Register from "./components/Auth/Register";
-import Buildings from "./components/Buildings/Buildings";
-import BuildingDetails from "./components/Buildings/BuildingDetails";
-import BuildingForm from "./components/Buildings/BuildingForm";
-import Reports from "./pages/Reports";
-import PrivateRoute from "./components/Auth/PrivateRoute";
-import "./styles/App.css";
-import AuthGuard from "./components/Auth/AuthGuard.jsx";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { BrowserRouter } from "react-router-dom";
+import PrivateRoute from "./components/Auth/PrivateRoute";
+import AuthGuard from "./components/Auth/AuthGuard.jsx";
+import "./styles/App.css";
 
-function App() {
+// Lazy load components
+const Login = lazy(() => import("./components/Auth/Login"));
+const Register = lazy(() => import("./components/Auth/Register"));
+const Buildings = lazy(() => import("./components/Buildings/Buildings"));
+const BuildingDetails = lazy(() => import("./components/Buildings/BuildingDetails"));
+const BuildingForm = lazy(() => import("./components/Buildings/BuildingForm"));
+const Reports = lazy(() => import("./pages/Reports"));
+
+// Loading component
+const Loading = () => <div className="loading">Зареждане...</div>;
+
+const App = React.memo(() => {
   return (
-      <ThemeProvider>
-        <div className="app">
+    <ThemeProvider>
+      <div className="app">
+        <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -23,11 +28,11 @@ function App() {
               <Route
                 path="/buildings"
                 element={
-                    <PrivateRoute>
+                  <PrivateRoute>
                     <Buildings />
                   </PrivateRoute>
                 }
-                />
+              />
               <Route
                 path="/buildings/new"
                 element={
@@ -56,9 +61,10 @@ function App() {
             </Route>
             <Route path="/" element={<Login />} />
           </Routes>
-        </div>
-      </ThemeProvider>
+        </Suspense>
+      </div>
+    </ThemeProvider>
   );
-}
+});
 
 export default App;
