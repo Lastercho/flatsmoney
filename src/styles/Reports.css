@@ -226,3 +226,16 @@ tr:hover {
     width: 100%;
   }
 }
+
+.revert-button {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.revert-button:hover {
+  background-color: #d9363e;
+}

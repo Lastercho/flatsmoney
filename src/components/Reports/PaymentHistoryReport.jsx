@@ -205,6 +205,41 @@ const PaymentHistoryReport = ({ buildingId, filterType }) => {
     XLSX.writeFile(wb, 'История_на_плащанията.xlsx');
   };
 
+  const revertPayment = async (payment) => {
+    if (!window.confirm('Сигурни ли сте, че искате да върнете това задължение като неплатено?')) {
+      return;
+    }
+
+    try {
+      // Ако задължението е платено от депозит, възстановяваме депозита
+      if (payment.is_paid_from_deposit) {
+        await axios.post(`/apartments/${payment.apartment_id}/deposits`, {
+          amount: payment.amount,
+          date: new Date().toISOString().split('T')[0],
+          description: 'Възстановен депозит след връщане на задължение'
+        });
+      }
+
+      // Връщаме задължението като неплатено
+      await axios.put(`/obligations/${payment.id}`, {
+        is_paid: false,
+        is_paid_from_deposit: false,
+        payment_date: null
+      });
+
+      // Опресняваме данните
+      const updatedPayments = payments.map((p) =>
+        p.id === payment.id ? { ...p, is_paid: false, is_paid_from_deposit: false } : p
+      );
+      setPayments(updatedPayments);
+
+      alert('Задължението беше успешно върнато като неплатено.');
+    } catch (error) {
+      console.error('Грешка при връщане на задължението като неплатено:', error);
+      alert('Възникна грешка при връщане на задължението.');
+    }
+  };
+
   if (loading) {
     return <div className="report-container">Зареждане...</div>;
   }
@@ -292,6 +327,16 @@ const PaymentHistoryReport = ({ buildingId, filterType }) => {
                 <td>{payment.owner_name || '-'}</td>
                 <td>{payment.description || '-'}</td>
                 <td>{formatAmount(payment.amount)} лв.</td>
+                {payment.type === 'obligation' && payment.is_paid && (
+                  <td>
+                    <button
+                      className="revert-button"
+                      onClick={() => revertPayment(payment)}
+                    >
+                      Изтрий
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
