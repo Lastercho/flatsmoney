@@ -271,11 +271,20 @@ const BuildingDetails = () => {
             <span className="amount">{formatAmount(summary.totalExpenses)} лв.</span>
           </div>
           <div className="summary-item">
-            <span>Налична сума:</span>
+            <span>Налична сума в касата:</span>
             <span className="amount">{formatAmount(summary.availableAmount)} лв.</span>
           </div>
         </div>
       </div>
+      <div className="summary-section">
+        <h3>Сградата разополага със следните средства за разходи</h3>
+        <div className="summary-grid">
+      <div className="summary-item">
+        <span>Налична сума в касата без депозити:</span>
+        <span className="amount">{formatAmount(summary.availableAmount - summary.totalDeposits)} лв.</span>
+      </div>
+    </div>
+</div>
 
       <div className="floors-section">
         <h3>Етажи</h3>
