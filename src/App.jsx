@@ -4,6 +4,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import AuthGuard from "./components/Auth/AuthGuard.jsx";
 import "./styles/App.css";
+import Home from "./pages/Home.jsx";
 
 // Lazy load components
 const Login = lazy(() => import("./components/Auth/Login"));
@@ -22,6 +23,7 @@ const App = React.memo(() => {
       <div className="app">
         <Suspense fallback={<Loading />}>
           <Routes>
+             <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route element={<AuthGuard />}>

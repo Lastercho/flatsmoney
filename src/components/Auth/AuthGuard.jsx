@@ -51,7 +51,7 @@ export default function AuthGuard() {
     }, []); // Празен масив от зависимости, защото използваме refs
 
     if (!isValid) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/home" replace />;
     }
 
     return <Outlet />;
