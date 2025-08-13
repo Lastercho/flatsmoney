@@ -331,7 +331,7 @@ const BuildingDetails = () => {
                 );
 
                 return (
-                  <tr key={apartment.id}>
+                  <tr style={ formatAmount(totalDeposits) < formatAmount(totalObligations) ?{backgroundColor: "rgba(0, 0, 0, 0.5)"} : {}} key={apartment.id}>
                     <td>{apartment.floor_number}</td>
                     <td>{apartment.apartment_number}</td>
                     <td>{apartment.owner_name}</td>
