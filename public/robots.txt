@@ -1,1 +1,1 @@
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://flat.mandini.eu/sitemap.xml
