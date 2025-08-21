@@ -1,6 +1,6 @@
 services:
   react-app:
-    image: lastercho/flatsmoney:3.4.1
+    image: lastercho/flatsmoney:3.4.4
     container_name: flatsmoney
     build:
       context: .
