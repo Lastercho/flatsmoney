@@ -86,7 +86,7 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
+    return new Date(dateString).toLocaleDateString('bg-BG', { year: 'numeric', month: '2-digit', day: '2-digit' });
   };
 
   if (loading) {

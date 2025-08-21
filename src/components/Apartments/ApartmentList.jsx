@@ -309,7 +309,7 @@ const ApartmentList = ({ floorId , onDataChange}) => {
               {deposits.map(deposit => (
                 <div key={deposit.id} className="deposit-item">
                   <p>Сума: {deposit.amount} лв.</p>
-                  <p>Дата: {new Date(deposit.date).toLocaleDateString()}</p>
+                  <p>Дата: {new Date(deposit.date).toLocaleDateString('bg-BG', { year: 'numeric', month: '2-digit', day: '2-digit' })}</p>
                   <p>Описание: {deposit.description}</p>
                   <button 
                     onClick={(e) => {
@@ -352,7 +352,7 @@ const ApartmentList = ({ floorId , onDataChange}) => {
               {obligations.filter(obligation => !obligation.is_paid).map(obligation => (
                 <div key={obligation.id} className="obligation-item">
                   <p>Сума: {obligation.amount} лв.</p>
-                  <p>Краен срок: {new Date(obligation.due_date).toLocaleDateString()}</p>
+                  <p>Краен срок: {new Date(obligation.due_date).toLocaleDateString('bg-BG', { year: 'numeric', month: '2-digit', day: '2-digit' })}</p>
                   <p>Описание: {obligation.description}</p>
                   <button 
                     onClick={(e) => {

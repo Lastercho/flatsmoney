@@ -352,7 +352,7 @@ const BuildingDetails = () => {
                         >
                           Плати {formatAmount(obligation.amount)} лв.
                           <br />
-                          <small>Краен срок: {new Date(obligation.due_date).toLocaleDateString()}</small>
+                          <small>Краен срок: {new Date(obligation.due_date).toLocaleDateString('bg-BG', { year: 'numeric', month: '2-digit', day: '2-digit' })}</small>
                         </button>
                       ))}
                     </td>
