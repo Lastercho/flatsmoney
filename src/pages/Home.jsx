@@ -23,11 +23,11 @@ const Home = () => {
           <div><br/><br/><br/>
 
           </div>
-        <Link to="/login">
-        <button type="submit" className="auth-button"
-               >Вход
-        </button>
-        </Link>
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link to="/login">
+            <button type="button" className="auth-button">Вход</button>
+          </Link>
+         </div>
           <br/><br/>
           <p>Нямате акаунт? <Link to="/register">Регистрирайте се</Link></p>
 
@@ -37,6 +37,11 @@ const Home = () => {
 
                   Всички данни и справки се създават единствено с цел улесняване домоуправителя във водене и отчитане приходи и разходи към сградата, като създателя не гарантира верността на информацията.
               </h4>
+          </div>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link to="/chess" title="Стартирай шах">
+                  <button type="button" className="auth-button">♟️ Шах</button>
+              </Link>
           </div>
       </div>
 

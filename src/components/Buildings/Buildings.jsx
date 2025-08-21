@@ -65,6 +65,9 @@ const Buildings = () => {
               >
                 {refreshing ? '⟳' : '↻'}
               </button>
+              <Link to="/chess" className="btn-add" title="Стартирай шах">
+                <span className="btn-icon">♟️</span> Шах
+              </Link>
               <Link to="/buildings/new" className="btn-add">
                 <span className="btn-icon">+</span> Добави сграда
               </Link>

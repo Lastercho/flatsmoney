@@ -5,6 +5,7 @@ import PrivateRoute from "./components/Auth/PrivateRoute";
 import AuthGuard from "./components/Auth/AuthGuard.jsx";
 import "./styles/App.css";
 import Home from "./pages/Home.jsx";
+const Chess = lazy(() => import("./components/Chess/Chess.jsx"));
 
 // Lazy load components
 const Login = lazy(() => import("./components/Auth/Login"));
@@ -26,6 +27,7 @@ const App = React.memo(() => {
              <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/chess" element={<Chess />} />
             <Route element={<AuthGuard />}>
               <Route
                 path="/buildings"
@@ -56,6 +58,14 @@ const App = React.memo(() => {
                 element={
                   <PrivateRoute>
                     <Reports />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/chess"
+                element={
+                  <PrivateRoute>
+                    <Chess />
                   </PrivateRoute>
                 }
               />

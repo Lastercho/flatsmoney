@@ -1,0 +1,147 @@
+/* Chess page styling */
+.chess-page {
+  padding: 20px;
+}
+
+.chess-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.chess-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-secondary, .btn-danger {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-secondary {
+  background: #e6eef7;
+  color: #1a3a6e;
+}
+
+.btn-secondary:hover { background: #d6e4f4; }
+
+.btn-danger {
+  background: #f8d7da;
+  color: #842029;
+}
+
+.btn-danger:hover { background: #f5c2c7; }
+
+.chess-container {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.board {
+  width: min(80vw, 520px);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  grid-template-rows: repeat(8, 1fr);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.rank { display: grid; grid-template-columns: repeat(8, 1fr); }
+
+.square {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-size: clamp(28px, 5.2vw, 44px);
+  transition: background 120ms ease-in-out, transform 60ms ease-in-out;
+}
+
+.square.light { background: #f0d9b5; }
+.square.dark  { background: #b58863; }
+
+.square.selected { outline: 3px solid #2b6cb0; outline-offset: -3px; }
+.square.legal::after {
+  content: '';
+  position: absolute;
+  width: 28%;
+  height: 28%;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.25);
+}
+
+.piece { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.25)); }
+.piece.white { color: #fff; text-shadow: 0 0 1px rgba(0,0,0,0.4); }
+.piece.black { color: #111; }
+
+/* Coordinates */
+.coord {
+  position: absolute;
+  font-size: 10px;
+  color: rgba(0,0,0,0.6);
+}
+.rank-label { left: 4px; top: 4px; }
+.file-label { right: 4px; bottom: 4px; }
+
+/* Side panel */
+.side-panel {
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-card, .legend-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* Ensure readable text on white cards and inputs */
+.chess-page .status-card,
+.chess-page .legend-card {
+  color: #111;
+}
+/* Explicitly override global element colors for card contents */
+.chess-page .status-card h1,
+.chess-page .status-card h2,
+.chess-page .status-card h3,
+.chess-page .status-card h4,
+.chess-page .status-card p,
+.chess-page .status-card small,
+.chess-page .legend-card h1,
+.chess-page .legend-card h2,
+.chess-page .legend-card h3,
+.chess-page .legend-card h4,
+.chess-page .legend-card p,
+.chess-page .legend-card small {
+  color: #111; /* force dark text on white cards regardless of theme */
+}
+.chess-page input,
+.chess-page textarea,
+.chess-page select {
+  color: #111;
+  background: #fff;
+}
+.chess-page input::placeholder { color: rgba(0,0,0,0.55); }
+
+.game-over {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 880px) {
+  .chess-container { flex-direction: column; }
+  .side-panel { min-width: unset; width: 100%; }
+  .board { width: 100%; }
+}
