@@ -39,6 +39,16 @@ const pieceUnicode = {
   K: '♔',
 };
 
+// Bulgarian names for pieces (lowercase type letters)
+const pieceBgName = {
+  p: 'пешка',
+  n: 'кон',
+  b: 'офицер',
+  r: 'топ',
+  q: 'дама',
+  k: 'цар',
+};
+
 function getUserId() {
   try {
     const u = JSON.parse(localStorage.getItem('user'));
@@ -76,6 +86,33 @@ function clearFen() {
   localStorage.removeItem(storageKey());
 }
 
+// Persist last move separately so it survives refresh on this device
+function saveLastMove(moveObj) {
+  try {
+    const key = storageKey() + '_lastmove';
+    if (moveObj) {
+      const compact = { from: moveObj.from, to: moveObj.to, san: moveObj.san, captured: moveObj.captured || null };
+      localStorage.setItem(key, JSON.stringify(compact));
+    } else {
+      localStorage.removeItem(key);
+    }
+  } catch (e) {
+    console.warn('Cannot save last move:', e);
+  }
+}
+function loadLastMove() {
+  try {
+    const key = storageKey() + '_lastmove';
+    const s = localStorage.getItem(key);
+    return s ? JSON.parse(s) : null;
+  } catch {
+    return null;
+  }
+}
+function clearLastMove() {
+  try { localStorage.removeItem(storageKey() + '_lastmove'); } catch {}
+}
+
 const ChessBoard = () => {
   const shareParamKey = 'game';
   const navigate = useNavigate();
@@ -85,6 +122,7 @@ const ChessBoard = () => {
   const [turn, setTurn] = useState('w');
   const [statusText, setStatusText] = useState('');
   const [isGameOver, setIsGameOver] = useState(false);
+  const [lastMove, setLastMove] = useState(null); // {from, to, san}
   const boardRef = useRef(null);
 
   // Build share URL from a fen
@@ -130,6 +168,9 @@ const ChessBoard = () => {
     setTurn(game.turn());
     updateStatus(game);
 
+    // Load any saved last move for this device
+    setLastMove(loadLastMove());
+
     // Persist and set share url on init
     saveFen(game.fen());
     setShareUrl(buildShareUrl(game.fen()));
@@ -171,7 +212,22 @@ const ChessBoard = () => {
       if (piece && piece.color === chess.turn()) {
         const moves = chess.moves({ square: sq, verbose: true });
         setSelected(sq);
-        setLegalMoves(moves.map((m) => m.to));
+        // Compute destinations and augment with rook squares for castling when selecting the king
+        let dests = moves.map((m) => m.to);
+        try {
+          if (piece.type === 'k') {
+            const hasK = moves.some((m) => m.flags && m.flags.includes('k'));
+            const hasQ = moves.some((m) => m.flags && m.flags.includes('q'));
+            if (piece.color === 'w') {
+              if (hasK) dests = Array.from(new Set([...dests, 'h1']));
+              if (hasQ) dests = Array.from(new Set([...dests, 'a1']));
+            } else {
+              if (hasK) dests = Array.from(new Set([...dests, 'h8']));
+              if (hasQ) dests = Array.from(new Set([...dests, 'a8']));
+            }
+          }
+        } catch {}
+        setLegalMoves(dests);
       } else {
         setSelected(null);
         setLegalMoves([]);
@@ -186,13 +242,31 @@ const ChessBoard = () => {
       return;
     }
 
-    // Try to make move
-    const move = chess.move({ from: selected, to: sq, promotion: 'q' });
+    // Try to make a move (supporting castling by allowing rook-click when king is selected)
+    let attemptedTo = sq;
+    try {
+      const selPiece = chess.get(selected);
+      const dstPiece = chess.get(sq);
+      if (selPiece && selPiece.type === 'k' && dstPiece && dstPiece.color === selPiece.color && dstPiece.type === 'r') {
+        // If the king is selected and the user clicks their rook, map to the king's castling destination square
+        if (selPiece.color === 'w') {
+          if (sq === 'h1') attemptedTo = 'g1';
+          if (sq === 'a1') attemptedTo = 'c1';
+        } else {
+          if (sq === 'h8') attemptedTo = 'g8';
+          if (sq === 'a8') attemptedTo = 'c8';
+        }
+      }
+    } catch {}
+    const move = chess.move({ from: selected, to: attemptedTo, promotion: 'q' });
     if (move) {
       // successful move
       setSelected(null);
       setLegalMoves([]);
       setTurn(chess.turn());
+      const lm = { from: move.from, to: move.to, san: move.san, captured: move.captured || null };
+      setLastMove(lm);
+      saveLastMove(lm);
       const fenNow = chess.fen();
       saveFen(fenNow);
       setShareUrl(buildShareUrl(fenNow));
@@ -205,7 +279,22 @@ const ChessBoard = () => {
       if (piece && piece.color === chess.turn()) {
         const moves = chess.moves({ square: sq, verbose: true });
         setSelected(sq);
-        setLegalMoves(moves.map((m) => m.to));
+        // Compute destinations and augment with rook squares for castling when selecting the king
+        let dests = moves.map((m) => m.to);
+        try {
+          if (piece.type === 'k') {
+            const hasK = moves.some((m) => m.flags && m.flags.includes('k'));
+            const hasQ = moves.some((m) => m.flags && m.flags.includes('q'));
+            if (piece.color === 'w') {
+              if (hasK) dests = Array.from(new Set([...dests, 'h1']));
+              if (hasQ) dests = Array.from(new Set([...dests, 'a1']));
+            } else {
+              if (hasK) dests = Array.from(new Set([...dests, 'h8']));
+              if (hasQ) dests = Array.from(new Set([...dests, 'a8']));
+            }
+          }
+        } catch {}
+        setLegalMoves(dests);
       } else {
         setSelected(null);
         setLegalMoves([]);
@@ -221,6 +310,8 @@ const ChessBoard = () => {
     setTurn(fresh.turn());
     setSelected(null);
     setLegalMoves([]);
+    setLastMove(null);
+    clearLastMove();
     clearFen();
     updateStatus(fresh);
     // Clear URL param
@@ -237,6 +328,17 @@ const ChessBoard = () => {
     setSelected(null);
     setLegalMoves([]);
     setTurn(chess.turn());
+    // Determine new last move (the one before the undone one)
+    const hist = chess.history({ verbose: true });
+    if (hist.length > 0) {
+      const prev = hist[hist.length - 1];
+      const lm = { from: prev.from, to: prev.to, san: prev.san, captured: prev.captured || null };
+      setLastMove(lm);
+      saveLastMove(lm);
+    } else {
+      setLastMove(null);
+      clearLastMove();
+    }
     const fenNow = chess.fen();
     saveFen(fenNow);
     setShareUrl(buildShareUrl(fenNow));
@@ -291,7 +393,7 @@ const ChessBoard = () => {
                 return (
                   <div
                     key={fileIndex}
-                    className={`square ${isDark ? 'dark' : 'light'} ${isSelected ? 'selected' : ''} ${isLegal ? 'legal' : ''}`}
+                    className={`square ${isDark ? 'dark' : 'light'} ${isSelected ? 'selected' : ''} ${isLegal ? 'legal' : ''} ${lastMove && (lastMove.from === sq || lastMove.to === sq) ? 'last-move' : ''}`}
                     onClick={() => onSquareClick(fileIndex, rankIndex)}
                   >
                     {square && (
@@ -321,9 +423,22 @@ const ChessBoard = () => {
               <p className="game-over">Играта е приключила.</p>
             )}
           </div>
-          <div className="legend-card">
-            <h3>Легенда</h3>
-            <p>Кликнете върху фигура, след това върху желано поле. Валидните ходове са подчертани.</p>
+
+          <div className="status-card">
+            <h3>Последен ход</h3>
+            {lastMove ? (
+              <>
+                <p><strong>{lastMove.san}</strong> ({lastMove.from}→{lastMove.to})</p>
+                {lastMove.captured ? (
+                  <p>
+                    Взета фигура: {pieceBgName[lastMove.captured] || lastMove.captured}
+                    {pieceUnicode[lastMove.captured] ? ` (${pieceUnicode[lastMove.captured]})` : ''}
+                  </p>
+                ) : null}
+              </>
+            ) : (
+              <p>Все още няма ход.</p>
+            )}
           </div>
           <div className="status-card">
             <h3>Продължи на друг браузър</h3>

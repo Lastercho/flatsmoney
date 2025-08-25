@@ -69,6 +69,7 @@
 .square.dark  { background: #b58863; }
 
 .square.selected { outline: 3px solid #2b6cb0; outline-offset: -3px; }
+.square.last-move { box-shadow: inset 0 0 0 4px rgba(255, 215, 0, 0.85); }
 .square.legal::after {
   content: '';
   position: absolute;
