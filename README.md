@@ -21,6 +21,10 @@ Notes:
 - A 404.html is included to support SPA routes.
 - A .nojekyll file is published to disable Jekyll processing.
 
+### Troubleshooting
+- If you see in the Actions log: "Canceling since a higher priority waiting request for pages exists", it means another (newer) Pages deployment was queued and this one was canceled. This is expected with Pages concurrency. Simply wait for the latest workflow run to finish. Pushing multiple commits quickly will cancel older runs in favor of the newest.
+- The workflow is configured to cancel older in-progress runs automatically (concurrency: group: pages, cancel-in-progress: true). This helps ensure the latest commit deploys. If a run gets canceled, there is nothing to fix; just check the most recent run.
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
