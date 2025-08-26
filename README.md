@@ -1,11 +1,25 @@
-# React + TypeScript + Vite
+# FLAT MONEY
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript + Vite app.
 
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Deployment to GitHub Pages
+
+This repo is configured to deploy the Vite build to GitHub Pages using GitHub Actions.
+
+How to enable:
+- In GitHub, go to Settings → Pages.
+- Set Source to GitHub Actions.
+- Push to the default branch (main or master). The workflow .github/workflows/deploy.yml will build and deploy.
+
+Notes:
+- Vite base is configured for production to use relative paths (./), which works on project pages.
+- A 404.html is included to support SPA routes.
+- A .nojekyll file is published to disable Jekyll processing.
 
 ## Expanding the ESLint configuration
 

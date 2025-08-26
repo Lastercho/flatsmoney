@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="bg">
+  <head>
+    <meta charset="utf-8" />
+    <title>Page Not Found</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content="0; url=./" />
+    <script>
+      // Client-side redirect for SPA routes on GitHub Pages
+      // For deep links, redirect to index.html so React Router can handle the route
+      (function() {
+        var redirect = sessionStorage.getItem('redirect');
+        if (redirect) {
+          sessionStorage.removeItem('redirect');
+          window.location.replace(redirect);
+        } else {
+          // Save the path so the app can navigate after load (optional pattern)
+          var path = location.pathname + location.search + location.hash;
+          if (path && path !== '/' && path !== './') {
+            sessionStorage.setItem('redirect', path);
+          }
+        }
+      })();
+    </script>
+    <style>
+      html, body { height: 100%; margin: 0; font-family: system-ui, Arial, sans-serif; }
+      .wrap { display: flex; align-items: center; justify-content: center; height: 100%; color: #333; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">Redirecting…</div>
+  </body>
+</html>
