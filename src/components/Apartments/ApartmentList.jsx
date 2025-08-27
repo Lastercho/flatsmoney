@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../../utils/axios'; // Използване на axios от utils
 import '../../styles/ApartmentList.css';
 import fetchRefreshes from '../../utils/fetchRefreshes';
+import { convertAndFormat } from '../../utils/currency';
 
 const ApartmentList = ({ floorId , onDataChange}) => {
   const [apartments, setApartments] = useState([]);
@@ -308,7 +309,7 @@ const ApartmentList = ({ floorId , onDataChange}) => {
             <div className="deposits-list">
               {deposits.map(deposit => (
                 <div key={deposit.id} className="deposit-item">
-                  <p>Сума: {deposit.amount} лв.</p>
+                  <p>Сума: {convertAndFormat(deposit.amount, deposit.date)} €</p>
                   <p>Дата: {new Date(deposit.date).toLocaleDateString('bg-BG', { year: 'numeric', month: '2-digit', day: '2-digit' })}</p>
                   <p>Описание: {deposit.description}</p>
                   <button 
@@ -351,7 +352,7 @@ const ApartmentList = ({ floorId , onDataChange}) => {
             <div className="obligations-list">
               {obligations.filter(obligation => !obligation.is_paid).map(obligation => (
                 <div key={obligation.id} className="obligation-item">
-                  <p>Сума: {obligation.amount} лв.</p>
+                  <p>Сума: {convertAndFormat(obligation.amount, obligation.due_date || obligation.date)} €</p>
                   <p>Краен срок: {new Date(obligation.due_date).toLocaleDateString('bg-BG', { year: 'numeric', month: '2-digit', day: '2-digit' })}</p>
                   <p>Описание: {obligation.description}</p>
                   <button 

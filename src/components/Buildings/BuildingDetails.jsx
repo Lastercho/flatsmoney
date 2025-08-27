@@ -6,12 +6,13 @@ import '../../styles/BuildingDetails.css';
 import ApartmentList from '../Apartments/ApartmentList';
 import FloorList from '../Floors/FloorList';
 import BulkObligations from "../Apartments/BulkObligations.jsx";
+import { convertAmountByDate } from '../../utils/currency';
 
 const BuildingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [apartments, setApartments] = useState([]);
-  const [expenses, setExpenses] = useState([]);
+  const [setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showBulkObligations, setShowBulkObligations] = useState(false);
   const [summary, setSummary] = useState({
@@ -21,7 +22,7 @@ const BuildingDetails = () => {
     availableAmount: 0
   });
   const [building, setBuilding] = useState(null);
-  const [floors, setFloors] = useState([]); // Добавяме state за етажите
+  const [setFloors] = useState([]); // Добавяме state за етажите
   const [error, setError] = useState('');
   const [selectedFloor, setSelectedFloor] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
@@ -51,21 +52,27 @@ const BuildingDetails = () => {
   const calculateSummary = (apartmentsData, expensesData = []) => {
     const totalDeposits = apartmentsData.reduce((sum, apartment) => 
       sum + (apartment.deposits?.reduce((depositSum, deposit) => 
-        depositSum + (parseFloat(deposit.amount) || 0), 0) || 0), 0
+        depositSum + (convertAmountByDate(deposit.amount, deposit.date) || 0), 0) || 0), 0
     );
 
     const totalUnpaidObligations = apartmentsData.reduce((sum, apartment) => 
-      sum + (apartment.obligations?.reduce((obligationSum, obligation) => 
-        obligationSum + (!obligation.is_paid ? (parseFloat(obligation.amount) || 0) : 0), 0) || 0), 0
+      sum + (apartment.obligations?.reduce((obligationSum, obligation) => {
+        const dateRef = obligation.due_date || obligation.date;
+        const amt = !obligation.is_paid ? (convertAmountByDate(obligation.amount, dateRef) || 0) : 0;
+        return obligationSum + amt;
+      }, 0) || 0), 0
     );
 
     const totalPaidObligations = apartmentsData.reduce((sum, apartment) => 
-      sum + (apartment.obligations?.reduce((obligationSum, obligation) => 
-        obligationSum + (obligation.is_paid ? (parseFloat(obligation.amount) || 0) : 0), 0) || 0), 0
+      sum + (apartment.obligations?.reduce((obligationSum, obligation) => {
+        const dateRef = obligation.due_date || obligation.date;
+        const amt = obligation.is_paid ? (convertAmountByDate(obligation.amount, dateRef) || 0) : 0;
+        return obligationSum + amt;
+      }, 0) || 0), 0
     );
 
     const totalExpenses = expensesData.reduce((sum, expense) => 
-      sum + (parseFloat(expense.amount) || 0), 0
+      sum + (convertAmountByDate(expense.amount, expense.date) || 0), 0
     );
 
     const availableAmount = totalDeposits + totalPaidObligations - totalExpenses;
@@ -260,19 +267,19 @@ const BuildingDetails = () => {
         <div className="summary-grid">
           <div className="summary-item">
             <span>Общо депозити:</span>
-            <span className="amount">{formatAmount(summary.totalDeposits)} лв.</span>
+            <span className="amount">{formatAmount(summary.totalDeposits)} €</span>
           </div>
           <div className="summary-item">
             <span>Общо задължения:</span>
-            <span className="amount">{formatAmount(summary.totalObligations)} лв.</span>
+            <span className="amount">{formatAmount(summary.totalObligations)} €</span>
           </div>
           <div className="summary-item">
             <span>Общо разходи:</span>
-            <span className="amount">{formatAmount(summary.totalExpenses)} лв.</span>
+            <span className="amount">{formatAmount(summary.totalExpenses)} €</span>
           </div>
           <div className="summary-item">
             <span>Налична сума в касата:</span>
-            <span className="amount">{formatAmount(summary.availableAmount)} лв.</span>
+            <span className="amount">{formatAmount(summary.availableAmount)} €</span>
           </div>
         </div>
       </div>
@@ -281,7 +288,7 @@ const BuildingDetails = () => {
         <div className="summary-grid">
       <div className="summary-item">
         <span>Налична сума в касата без депозити:</span>
-        <span className="amount">{formatAmount(summary.availableAmount - summary.totalDeposits)} лв.</span>
+        <span className="amount">{formatAmount(summary.availableAmount - summary.totalDeposits)} €</span>
       </div>
     </div>
 </div>
@@ -323,11 +330,13 @@ const BuildingDetails = () => {
             <tbody>
               {apartments.map(apartment => {
                 const totalDeposits = apartment.deposits.reduce((sum, deposit) => 
-                  sum + parseFloat(deposit.amount || 0), 0
+                  sum + (convertAmountByDate(deposit.amount, deposit.date) || 0), 0
                 );
                 const unpaidObligations = apartment.obligations.filter(o => !o.is_paid);
-                const totalObligations = unpaidObligations.reduce((sum, obligation) => 
-                  sum + parseFloat(obligation.amount || 0), 0
+                const totalObligations = unpaidObligations.reduce((sum, obligation) => {
+                  const dateRef = obligation.due_date || obligation.date;
+                  return sum + (convertAmountByDate(obligation.amount, dateRef) || 0);
+                }, 0
                 );
 
                 return (
@@ -336,8 +345,8 @@ const BuildingDetails = () => {
                     <td>{apartment.apartment_number}</td>
                     <td>{apartment.owner_name}</td>
                     <td>{apartment.area}</td>
-                    <td>{formatAmount(totalDeposits)} лв.</td>
-                    <td>{formatAmount(totalObligations)} лв.</td>
+                    <td>{formatAmount(totalDeposits)} €</td>
+                    <td>{formatAmount(totalObligations)} €</td>
                     <td>
                       {unpaidObligations.map(obligation => (
                         <button
@@ -350,7 +359,7 @@ const BuildingDetails = () => {
                         }
                           className="payment-button"
                         >
-                          Плати {formatAmount(obligation.amount)} лв.
+                          Плати {formatAmount(convertAmountByDate(obligation.amount, obligation.due_date || obligation.date))} €
                           <br />
                           <small>Краен срок: {new Date(obligation.due_date).toLocaleDateString('bg-BG', { year: 'numeric', month: '2-digit', day: '2-digit' })}</small>
                         </button>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../../utils/axios'; // Използване на axios от utils
 import * as XLSX from 'xlsx';
 import '../../styles/Reports.css';
+import { convertAmountByDate } from '../../utils/currency';
 
 const PaymentHistoryReport = ({ buildingId, filterType }) => {
   const [payments, setPayments] = useState([]);
@@ -189,15 +190,19 @@ const PaymentHistoryReport = ({ buildingId, filterType }) => {
   };
 
   const exportToExcel = () => {
-    const filteredData = filterPayments(payments).map(payment => ({
-      'Тип': getPaymentTypeLabel(payment.type),
-      'Дата': formatDate(payment.date),
-      'Етаж': payment.floor_number || '-',
-      'Апартамент': payment.apartment_number || '-',
-      'Собственик': payment.owner_name || '-',
-      'Описание': payment.description || '-',
-      'Сума': formatAmount(payment.amount) + ' лв.'
-    }));
+    const filteredData = filterPayments(payments).map(payment => {
+      const dateRef = payment.date || payment.due_date;
+      const displayAmount = convertAmountByDate(payment.amount, dateRef);
+      return {
+        'Тип': getPaymentTypeLabel(payment.type),
+        'Дата': formatDate(payment.date),
+        'Етаж': payment.floor_number || '-',
+        'Апартамент': payment.apartment_number || '-',
+        'Собственик': payment.owner_name || '-',
+        'Описание': payment.description || '-',
+        'Сума': formatAmount(displayAmount) + ' €'
+      };
+    });
 
     const ws = XLSX.utils.json_to_sheet(filteredData);
     const wb = XLSX.utils.book_new();
@@ -249,8 +254,10 @@ const PaymentHistoryReport = ({ buildingId, filterType }) => {
   }
 
   const filteredPayments = filterPayments(payments);
-  const totalAmount = filteredPayments.reduce((sum, payment) => 
-    sum + parseFloat(payment.amount || 0), 0
+  const totalAmount = filteredPayments.reduce((sum, payment) => {
+    const dateRef = payment.date || payment.due_date;
+    return sum + (convertAmountByDate(payment.amount, dateRef) || 0);
+  }, 0
   );
 
   return (
@@ -301,7 +308,7 @@ const PaymentHistoryReport = ({ buildingId, filterType }) => {
       <div className="report-summary">
         <h3>Обобщение</h3>
         <p>Общо записи: {filteredPayments.length}</p>
-        <p>Обща сума: {formatAmount(totalAmount)} лв.</p>
+        <p>Обща сума: {formatAmount(totalAmount)} €</p>
       </div>
 
       <div className="report-content">
@@ -326,7 +333,7 @@ const PaymentHistoryReport = ({ buildingId, filterType }) => {
                 <td>{payment.apartment_number || '-'}</td>
                 <td>{payment.owner_name || '-'}</td>
                 <td>{payment.description || '-'}</td>
-                <td>{formatAmount(payment.amount)} лв.</td>
+                <td>{formatAmount(convertAmountByDate(payment.amount, payment.date || payment.due_date))} €</td>
                 {payment.type === 'obligation' && payment.is_paid && (
                   <td>
                     <button

@@ -63,7 +63,7 @@ const BulkObligations = ({ buildingId, onSuccess }) => {
 
             <form onSubmit={handleSubmit} className="bulk-obligations-form">
                 <div className="form-group">
-                    <label htmlFor="amount">Сума (лв.)</label>
+                    <label htmlFor="amount">Сума (€)</label>
                     <input
                         type="number"
                         id="amount"

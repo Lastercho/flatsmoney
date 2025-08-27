@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../utils/axios'; // Използване на axios от utils
 import '../../styles/BuildingExpenses.css';
+import { convertAndFormat } from '../../utils/currency';
 
 const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
   const [expenses, setExpenses] = useState([]);
@@ -14,6 +15,10 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // показваме последните 10 записа
+
   useEffect(() => {
     if (buildingId) {
       fetchExpenses();
@@ -25,6 +30,7 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
     try {
       const response = await axios.get(`/buildings/${buildingId}/expenses`);
       setExpenses(response.data);
+      setCurrentPage(1); // винаги показваме най-новите при зареждане
       setError(null);
     } catch (err) {
       console.error('Грешка при зареждане на разходите:', err);
@@ -89,6 +95,22 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
     return new Date(dateString).toLocaleDateString('bg-BG', { year: 'numeric', month: '2-digit', day: '2-digit' });
   };
 
+  // Derived data: sort and paginate
+  const sortedExpenses = [...expenses].sort((a, b) => {
+    const da = new Date(a.date).getTime();
+    const db = new Date(b.date).getTime();
+    if (db !== da) return db - da; // най-новите първо
+    // tiebreaker by id if numeric
+    const aid = typeof a.id === 'number' ? a.id : parseInt(a.id, 10);
+    const bid = typeof b.id === 'number' ? b.id : parseInt(b.id, 10);
+    if (!isNaN(aid) && !isNaN(bid)) return bid - aid;
+    return 0;
+  });
+  const totalPages = Math.max(1, Math.ceil(sortedExpenses.length / pageSize));
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+  const startIndex = (safePage - 1) * pageSize;
+  const currentExpenses = sortedExpenses.slice(startIndex, startIndex + pageSize);
+
   if (loading) {
     return <div className="building-expenses">Зареждане...</div>;
   }
@@ -104,7 +126,7 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
       <form onSubmit={handleSubmit} className="expense-form">
         <select
           value={newExpense.expense_type_id}
-          onChange={(e) => setNewExpense({...newExpense, expense_type_id: e.target.value})}
+          onChange={(e) => setNewExpense({ ...newExpense, expense_type_id: e.target.value })}
           required
         >
           <option value="">Изберете тип разход</option>
@@ -117,7 +139,7 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
           type="number"
           placeholder="Сума"
           value={newExpense.amount}
-          onChange={(e) => setNewExpense({...newExpense, amount: e.target.value})}
+          onChange={(e) => setNewExpense({ ...newExpense, amount: e.target.value })}
           min="0.01"
           step="0.01"
           required
@@ -126,7 +148,7 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
         <input
           type="date"
           value={newExpense.date}
-          onChange={(e) => setNewExpense({...newExpense, date: e.target.value})}
+          onChange={(e) => setNewExpense({ ...newExpense, date: e.target.value })}
           required
         />
 
@@ -134,42 +156,64 @@ const BuildingExpenses = ({ buildingId, onExpenseChange }) => {
           type="text"
           placeholder="Описание"
           value={newExpense.description}
-          onChange={(e) => setNewExpense({...newExpense, description: e.target.value})}
+          onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
         />
 
         <button type="submit">Добави разход</button>
       </form>
 
       <div className="expenses-list">
-        <table>
-          <thead>
-            <tr>
-              <th>Дата</th>
-              <th>Тип разход</th>
-              <th>Сума</th>
-              <th>Описание</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.map(expense => (
-              <tr key={expense.id}>
-                <td>{formatDate(expense.date)}</td>
-                <td>{expense.expense_type_name}</td>
-                <td>{parseFloat(expense.amount).toFixed(2)} лв.</td>
-                <td>{expense.description}</td>
-                <td>
-                  <button 
-                    onClick={() => handleDelete(expense.id)}
-                    className="delete-button"
-                  >
-                    Изтрий
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {sortedExpenses.length === 0 ? (
+          <div className="empty">Няма разходи</div>
+        ) : (
+          <>
+            <table>
+              <thead>
+                <tr>
+                  <th>Дата</th>
+                  <th>Тип разход</th>
+                  <th>Сума</th>
+                  <th>Описание</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentExpenses.map(expense => (
+                  <tr key={expense.id}>
+                    <td>{formatDate(expense.date)}</td>
+                    <td>{expense.expense_type_name}</td>
+                    <td>{convertAndFormat(expense.amount, expense.date)} €</td>
+                    <td>{expense.description}</td>
+                    <td>
+                      <button
+                        onClick={() => handleDelete(expense.id)}
+                        className="delete-button"
+                      >
+                        Изтрий
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="pagination" style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '12px' }}>
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={safePage === 1}
+              >
+                Предишни
+              </button>
+              <span>Страница {safePage} от {totalPages}</span>
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={safePage === totalPages}
+              >
+                Следващи
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

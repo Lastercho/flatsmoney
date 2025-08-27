@@ -1,10 +1,74 @@
 <!doctype html>
-<html lang="en">
+<html lang="bg">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <title>FLAT MONEY — Помощник на домоуправителя</title>
+    <meta name="description" content="FLAT MONEY е безплатна система за управление на етажна собственост: управление на сгради, апартаменти, депозити, задължения и справки. В помощ на домоуправителя." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0d6efd" />
+
     <link rel="icon" type="image/svg+xml" href="/building.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FLAT MONEY</title>
+
+    <!-- Canonical URL is set dynamically to текущия домейн -->
+    <link id="canonical-link" rel="canonical" href="/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="FLAT MONEY — Помощник на домоуправителя" />
+    <meta property="og:description" content="Управлявайте сгради, апартаменти, депозити и задължения. Генерирайте справки. Лесно и безплатно." />
+    <meta property="og:site_name" content="FLAT MONEY" />
+    <meta property="og:locale" content="bg_BG" />
+    <meta property="og:image" content="/building.svg" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="FLAT MONEY — Помощник на домоуправителя" />
+    <meta name="twitter:description" content="Система за управление на етажна собственост и помощ за домоуправителя." />
+    <meta name="twitter:image" content="/building.svg" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "FLAT MONEY",
+      "description": "Система за управление на етажна собственост в помощ на домоуправителя.",
+      "url": "",
+      "inLanguage": "bg-BG",
+      "publisher": {
+        "@type": "Organization",
+        "name": "FLAT MONEY"
+      }
+    }
+    </script>
+
+    <!-- Set canonical and JSON-LD url at runtime based on current origin -->
+    <script>
+      (function() {
+        try {
+          var origin = window.location.origin || '';
+          var canon = document.getElementById('canonical-link');
+          if (canon) { canon.setAttribute('href', origin + '/'); }
+          var ld = document.querySelector('script[type="application/ld+json"]');
+          if (ld) {
+            var data = JSON.parse(ld.textContent || '{}');
+            data.url = origin + '/';
+            ld.textContent = JSON.stringify(data);
+          }
+          // hreflang self-reference (bg)
+          var hrefLang = document.createElement('link');
+          hrefLang.setAttribute('rel', 'alternate');
+          hrefLang.setAttribute('hreflang', 'bg');
+          hrefLang.setAttribute('href', origin + '/');
+          document.head.appendChild(hrefLang);
+        } catch (e) {
+          /* noop */
+        }
+      })();
+    </script>
   </head>
 
   <body>

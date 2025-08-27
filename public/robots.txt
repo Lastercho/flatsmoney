@@ -1,1 +1,9 @@
-Sitemap: https://flat.mandini.eu/sitemap.xml
+# Robots.txt for FLAT MONEY
+# Allow all crawlers to index the site. For private environments, change to Disallow: /.
+User-agent: *
+Allow: /
+
+# Sitemap location (Google prefers absolute URL; replace with your domain after deployment)
+Sitemap: /sitemapn.xml
+# Example absolute form (recommended):
+# Sitemap: https://your-domain.example/sitemap.xml
