@@ -12,7 +12,7 @@ const BuildingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [apartments, setApartments] = useState([]);
-  const [setExpenses] = useState([]);
+  const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showBulkObligations, setShowBulkObligations] = useState(false);
   const [summary, setSummary] = useState({
@@ -22,7 +22,7 @@ const BuildingDetails = () => {
     availableAmount: 0
   });
   const [building, setBuilding] = useState(null);
-  const [setFloors] = useState([]); // Добавяме state за етажите
+  const [floors, setFloors] = useState([]); // Добавяме state за етажите
   const [error, setError] = useState('');
   const [selectedFloor, setSelectedFloor] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
