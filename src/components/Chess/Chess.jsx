@@ -88,6 +88,7 @@ function clearFen() {
 
 // Persist last move separately so it survives refresh on this device
 
+const promotionPieces = ['q', 'r', 'b', 'n']; // само тези фигури могат да се промотират
 
 const ChessBoard = () => {
     const shareParamKey = 'game';
@@ -99,14 +100,18 @@ const ChessBoard = () => {
     const [statusText, setStatusText] = useState('');
     const [isGameOver, setIsGameOver] = useState(false);
     const [lastMove, setLastMove] = useState(null); // {from, to, san}
+    const [capturedWhite, setCapturedWhite] = useState([]); // black took white pieces
+    const [capturedBlack, setCapturedBlack] = useState([]); // white took black pieces
+    const [promotion, setPromotion] = useState(null); // {from, to, color}
+    const [promotionOptions, setPromotionOptions] = useState([]);
     const boardRef = useRef(null);
 
     // Build share URL from a fen and lastMove
-    const buildShareUrl = (fen, lastMoveObj) => {
+    const buildShareUrl = (fen, lastMoveObj, capWhite = capturedWhite, capBlack = capturedBlack) => {
         const compact = lastMoveObj
             ? { from: lastMoveObj.from, to: lastMoveObj.to, san: lastMoveObj.san, captured: lastMoveObj.captured || null }
             : null;
-        const payload = { fen, lastMove: compact, t: Date.now() };
+        const payload = { fen, lastMove: compact, capWhite, capBlack, t: Date.now() };
         const encoded = b64urlEncode(JSON.stringify(payload));
         const url = new URL(window.location.href);
         url.searchParams.set(shareParamKey, encoded);
@@ -123,12 +128,16 @@ const ChessBoard = () => {
         const encoded = url.searchParams.get(shareParamKey);
         let fenFromUrl = null;
         let lastMoveFromUrl = null;
+        let capWhiteFromUrl = null;
+        let capBlackFromUrl = null;
         if (encoded) {
             const decoded = b64urlDecode(encoded);
             try {
                 const obj = JSON.parse(decoded);
                 if (obj?.fen) fenFromUrl = obj.fen;
                 if (obj?.lastMove) lastMoveFromUrl = obj.lastMove;
+                if (Array.isArray(obj?.capWhite)) capWhiteFromUrl = obj.capWhite;
+                if (Array.isArray(obj?.capBlack)) capBlackFromUrl = obj.capBlack;
             } catch (e) {
                 console.warn('Invalid game URL payload');
             }
@@ -149,12 +158,46 @@ const ChessBoard = () => {
         setTurn(game.turn());
         updateStatus(game);
 
+        // Ако няма подредени взети фигури, изчисли ги спрямо фигурите на дъската
+        if (capWhiteFromUrl && capBlackFromUrl) {
+            setCapturedWhite(capWhiteFromUrl);
+            setCapturedBlack(capBlackFromUrl);
+        } else {
+            // Създай списък с всички фигури по цвят от началната позиция
+            const initialWhite = ['P','P','P','P','P','P','P','P','R','N','B','Q','K','B','N','R'];
+            const initialBlack = ['p','p','p','p','p','p','p','p','r','n','b','q','k','b','n','r'];
+            // Преброй фигурите на дъската
+            const currentWhite = [];
+            const currentBlack = [];
+            game.board().forEach(rank => {
+                rank.forEach(square => {
+                    if (square) {
+                        if (square.color === 'w') currentWhite.push(square.type.toUpperCase());
+                        else currentBlack.push(square.type.toLowerCase());
+                    }
+                });
+            });
+            // Функция за намиране на липсващи фигури
+            function diffPieces(initial, current) {
+                const init = [...initial];
+                current.forEach(t => {
+                    const idx = init.indexOf(t);
+                    if (idx !== -1) init.splice(idx, 1);
+                });
+                return init;
+            }
+            const capW = diffPieces(initialWhite, currentWhite).map(t => t.toLowerCase()); // взети от черните (бели фигури)
+            const capB = diffPieces(initialBlack, currentBlack); // взети от белите (черни фигури)
+            setCapturedWhite(capW);
+            setCapturedBlack(capB);
+        }
+
         // Initialize last move from URL payload (if provided)
         setLastMove(lastMoveFromUrl || null);
 
         // Persist and set share url on init
         saveFen(game.fen());
-        setShareUrl(buildShareUrl(game.fen(), lastMoveFromUrl || null));
+        setShareUrl(buildShareUrl(game.fen(), lastMoveFromUrl || null, capWhiteFromUrl, capBlackFromUrl));
 
         // If URL had no param, ensure it reflects current state without adding history entry
         if (!encoded) {
@@ -207,7 +250,7 @@ const ChessBoard = () => {
                             if (hasQ) dests = Array.from(new Set([...dests, 'a8']));
                         }
                     }
-                } catch {}
+                } catch { }
                 setLegalMoves(dests);
             } else {
                 setSelected(null);
@@ -238,7 +281,41 @@ const ChessBoard = () => {
                     if (sq === 'a8') attemptedTo = 'c8';
                 }
             }
-        } catch {}
+        } catch { }
+        // Проверка за промоция
+        const selPiece = chess.get(selected);
+        if (
+            selPiece &&
+            selPiece.type === 'p' &&
+            ((selPiece.color === 'w' && sq[1] === '8') || (selPiece.color === 'b' && sq[1] === '1'))
+        ) {
+            // Събери наличните фигури за промоция от взетите фигури
+            let available = [];
+            if (selPiece.color === 'w') {
+                // Може да избира само от взетите от черните фигури (capturedWhite)
+                const counts = {};
+                capturedWhite.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+                promotionPieces.forEach(t => {
+                    if (counts[t.toLowerCase()] > 0) available.push(t);
+                });
+            } else {
+                // Може да избира само от взетите от белите фигури (capturedBlack)
+                const counts = {};
+                capturedBlack.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+                promotionPieces.forEach(t => {
+                    if (counts[t.toLowerCase()] > 0) available.push(t);
+                });
+            }
+            // Ако няма налични фигури, не позволявай промоция
+            if (available.length === 0) {
+                alert('Няма налични фигури за промоция!');
+                return;
+            }
+            setPromotion({ from: selected, to: attemptedTo, color: selPiece.color });
+            setPromotionOptions(available);
+            return;
+        }
+        // Извършване на нормален ход
         const move = chess.move({ from: selected, to: attemptedTo, promotion: 'q' });
         if (move) {
             // successful move
@@ -247,11 +324,22 @@ const ChessBoard = () => {
             setTurn(chess.turn());
             const lm = { from: move.from, to: move.to, san: move.san, captured: move.captured || null };
             setLastMove(lm);
+            // Track captured pieces
+            let newCapturedWhite = capturedWhite;
+            let newCapturedBlack = capturedBlack;
+            if (move.captured) {
+                if (move.color === 'w') {
+                    newCapturedBlack = [...capturedBlack, move.captured];
+                    setCapturedBlack(newCapturedBlack);
+                } else {
+                    newCapturedWhite = [...capturedWhite, move.captured];
+                    setCapturedWhite(newCapturedWhite);
+                }
+            }
             const fenNow = chess.fen();
             saveFen(fenNow);
-            setShareUrl(buildShareUrl(fenNow, lm));
-            // Update URL without adding history entries
-            window.history.replaceState({}, '', buildShareUrl(fenNow, lm));
+            setShareUrl(buildShareUrl(fenNow, lm, newCapturedWhite, newCapturedBlack));
+            window.history.replaceState({}, '', buildShareUrl(fenNow, lm, newCapturedWhite, newCapturedBlack));
             updateStatus(chess);
         } else {
             // invalid destination; maybe select new piece
@@ -273,13 +361,52 @@ const ChessBoard = () => {
                             if (hasQ) dests = Array.from(new Set([...dests, 'a8']));
                         }
                     }
-                } catch {}
+                } catch { }
                 setLegalMoves(dests);
             } else {
                 setSelected(null);
                 setLegalMoves([]);
             }
         }
+    };
+
+    // Функция за избор на фигура за промоция
+    const handlePromotion = (piece) => {
+        if (!promotion) return;
+        const { from, to, color } = promotion;
+        // Извърши промоцията с избраната фигура
+        const move = chess.move({ from, to, promotion: piece });
+        if (move) {
+            setSelected(null);
+            setLegalMoves([]);
+            setTurn(chess.turn());
+            const lm = { from: move.from, to: move.to, san: move.san, captured: move.captured || null };
+            setLastMove(lm);
+            // Обнови взетите фигури (премахни използваната за промоция)
+            if (color === 'w') {
+                // Намери първото срещане на тази фигура в capturedWhite
+                const idx = capturedWhite.findIndex(t => t.toLowerCase() === piece);
+                if (idx !== -1) {
+                    const newCapturedWhite = [...capturedWhite];
+                    newCapturedWhite.splice(idx, 1);
+                    setCapturedWhite(newCapturedWhite);
+                }
+            } else {
+                const idx = capturedBlack.findIndex(t => t.toLowerCase() === piece);
+                if (idx !== -1) {
+                    const newCapturedBlack = [...capturedBlack];
+                    newCapturedBlack.splice(idx, 1);
+                    setCapturedBlack(newCapturedBlack);
+                }
+            }
+            const fenNow = chess.fen();
+            saveFen(fenNow);
+            setShareUrl(buildShareUrl(fenNow, lm, capturedWhite, capturedBlack));
+            window.history.replaceState({}, '', buildShareUrl(fenNow, lm, capturedWhite, capturedBlack));
+            updateStatus(chess);
+        }
+        setPromotion(null);
+        setPromotionOptions([]);
     };
 
     const handleReset = () => {
@@ -291,12 +418,14 @@ const ChessBoard = () => {
         setSelected(null);
         setLegalMoves([]);
         setLastMove(null);
+        setCapturedWhite([]);
+        setCapturedBlack([]);
         clearFen();
         updateStatus(fresh);
         // Clear URL param
         const url = new URL(window.location.href);
         url.searchParams.delete(shareParamKey);
-        const withParam = buildShareUrl(fresh.fen(), null);
+        const withParam = buildShareUrl(fresh.fen(), null, [], []);
         setShareUrl(withParam);
         window.history.replaceState({}, '', withParam);
     };
@@ -307,6 +436,36 @@ const ChessBoard = () => {
         setSelected(null);
         setLegalMoves([]);
         setTurn(chess.turn());
+        let newCapturedWhite = capturedWhite;
+        let newCapturedBlack = capturedBlack;
+
+        // Проверка за промоция (ако пешката е достигнала последния ред и е сменена с фигура)
+        if (
+            undone.promotion &&
+            ['q', 'r', 'b', 'n'].includes(undone.promotion)
+        ) {
+            if (undone.color === 'w') {
+                // Върни промотираната фигура обратно в capturedWhite
+                newCapturedWhite = [...capturedWhite, undone.promotion];
+                setCapturedWhite(newCapturedWhite);
+            } else {
+                // Върни промотираната фигура обратно в capturedBlack
+                newCapturedBlack = [...capturedBlack, undone.promotion];
+                setCapturedBlack(newCapturedBlack);
+            }
+        }
+
+        // Върни взетата фигура, ако е имало взимане
+        if (undone.captured) {
+            if (undone.color === 'w') {
+                newCapturedBlack = capturedBlack.slice(0, -1);
+                setCapturedBlack(newCapturedBlack);
+            } else {
+                newCapturedWhite = capturedWhite.slice(0, -1);
+                setCapturedWhite(newCapturedWhite);
+            }
+        }
+
         // Determine new last move (the one before the undone one)
         const hist = chess.history({ verbose: true });
         let currentLastMove = null;
@@ -320,8 +479,8 @@ const ChessBoard = () => {
         }
         const fenNow = chess.fen();
         saveFen(fenNow);
-        setShareUrl(buildShareUrl(fenNow, currentLastMove));
-        window.history.replaceState({}, '', buildShareUrl(fenNow, currentLastMove));
+        setShareUrl(buildShareUrl(fenNow, currentLastMove, newCapturedWhite, newCapturedBlack));
+        window.history.replaceState({}, '', buildShareUrl(fenNow, currentLastMove, newCapturedWhite, newCapturedBlack));
         updateStatus(chess);
     };
 
@@ -359,39 +518,72 @@ const ChessBoard = () => {
             </div>
 
             <div className="chess-container">
-                <div className="board" ref={boardRef}>
-                    {board.map((rank, rankIndex) => (
-                        <div className="rank" key={rankIndex}>
-                            {rank.map((square, fileIndex) => {
-                                const isDark = (rankIndex + fileIndex) % 2 === 1;
-                                const file = 'abcdefgh'[fileIndex];
-                                const rankNum = 8 - rankIndex;
-                                const sq = `${file}${rankNum}`;
-                                const isSelected = selected === sq;
-                                const isLegal = legalMoves.includes(sq);
-                                return (
-                                    <div
-                                        key={fileIndex}
-                                        className={`square ${isDark ? 'dark' : 'light'} ${isSelected ? 'selected' : ''} ${isLegal ? 'legal' : ''} ${lastMove && (lastMove.from === sq || lastMove.to === sq) ? 'last-move' : ''}`}
-                                        onClick={() => onSquareClick(fileIndex, rankIndex)}
-                                    >
-                                        {square && (
-                                            <span className={`piece ${square.color === 'w' ? 'white' : 'black'}`}>
-                        {pieceUnicode[square.type === square.type.toLowerCase() ? square.type : square.type] || pieceUnicode[square.type] || ''}
-                      </span>
-                                        )}
-                                        {/* Coordinates labels */}
-                                        {fileIndex === 0 && (
-                                            <div className="coord rank-label">{rankNum}</div>
-                                        )}
-                                        {rankIndex === 7 && (
-                                            <div className="coord file-label">{'abcdefgh'[fileIndex]}</div>
-                                        )}
-                                    </div>
-                                );
-                            })}
+                <div className="board-stack">
+                    {/* Диалог за промоция */}
+                    {promotion && (
+                        <div className="promotion-dialog">
+                            <div className="promotion-content">
+                                <p>Изберете фигура за промоция:</p>
+                                <div className="promotion-options">
+                                    {promotionOptions.map((p) => (
+                                        <button
+                                            key={p}
+                                            className="promotion-btn"
+                                            onClick={() => handlePromotion(p)}
+                                        >
+                                            {pieceUnicode[p.toLowerCase()]}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
-                    ))}
+                    )}
+                    <div className="captured-row top-captured">
+                        {/* Captured by White (black pieces) displayed on top */}
+                        {capturedBlack.map((t, idx) => (
+                            <span key={`cb-${idx}`} className="captured-piece black">{pieceUnicode[t] || t}</span>
+                        ))}
+                    </div>
+                    <div className="board" ref={boardRef}>
+                        {board.map((rank, rankIndex) => (
+                            <div className="rank" key={rankIndex}>
+                                {rank.map((square, fileIndex) => {
+                                    const isDark = (rankIndex + fileIndex) % 2 === 1;
+                                    const file = 'abcdefgh'[fileIndex];
+                                    const rankNum = 8 - rankIndex;
+                                    const sq = `${file}${rankNum}`;
+                                    const isSelected = selected === sq;
+                                    const isLegal = legalMoves.includes(sq);
+                                    return (
+                                        <div
+                                            key={fileIndex}
+                                            className={`square ${isDark ? 'dark' : 'light'} ${isSelected ? 'selected' : ''} ${isLegal ? 'legal' : ''} ${lastMove && (lastMove.from === sq || lastMove.to === sq) ? 'last-move' : ''}`}
+                                            onClick={() => onSquareClick(fileIndex, rankIndex)}
+                                        >
+                                            {square && (
+                                                <span className={`piece ${square.color === 'w' ? 'white' : 'black'}`}>
+                                                    {pieceUnicode[square.type === square.type.toLowerCase() ? square.type : square.type] || pieceUnicode[square.type] || ''}
+                                                </span>
+                                            )}
+                                            {/* Coordinates labels */}
+                                            {fileIndex === 0 && (
+                                                <div className="coord rank-label">{rankNum}</div>
+                                            )}
+                                            {rankIndex === 7 && (
+                                                <div className="coord file-label">{'abcdefgh'[fileIndex]}</div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="captured-row bottom-captured">
+                        {/* Captured by Black (white pieces) displayed at bottom */}
+                        {capturedWhite.map((t, idx) => (
+                            <span key={`cw-${idx}`} className="captured-piece white">{pieceUnicode[t.toUpperCase()] || pieceUnicode[t] || t}</span>
+                        ))}
+                    </div>
                 </div>
 
                 <div className="side-panel">
@@ -436,6 +628,8 @@ const ChessBoard = () => {
                     </div>
                 </div>
             </div>
+
+
         </div>
     );
 };
